@@ -1,17 +1,12 @@
-package monitorAgent
+package main
 
 import (
 	"fmt"
-)
-
-const (
-	MainServerSectionName = "MainServer"
-	MainServerIpKeyName   = "IP"
-	MainServerPortKeyName = "Port"
+	"monitorAgent/config"
 )
 
 func main() {
-	address, err := GetMainServerConfig()
+	address, err := config.GetMainServerConfig()
 	if err == nil {
 		fmt.Println(address)
 	} else {
