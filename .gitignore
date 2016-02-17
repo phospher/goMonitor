@@ -1,3 +1,2 @@
 agent/bin/*
-agent/src/github.com/*
-
+agent/pkg/*
