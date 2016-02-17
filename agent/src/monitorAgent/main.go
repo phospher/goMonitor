@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	fmt.Println(GetSystemCPUUsage())
+	fmt.Println(GetSystemMemoryUsage())
 }
