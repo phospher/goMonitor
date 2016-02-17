@@ -2,14 +2,9 @@ package main
 
 import (
 	"fmt"
-	"monitorAgent/config"
+	//"monitorAgent/config"
 )
 
 func main() {
-	address, err := config.GetMainServerConfig()
-	if err == nil {
-		fmt.Println(address)
-	} else {
-		fmt.Println(err.Error())
-	}
+	fmt.Println(GetSystemCPUUsage())
 }
