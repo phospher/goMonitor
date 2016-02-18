@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	fmt.Println(GetSystemMemoryUsage())
+	fmt.Println(GetSystemInfo())
 }
