@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
-	"fmt"
+	"monitorAgent/config"
 	"net"
 	"os/exec"
 	"regexp"
@@ -11,7 +11,6 @@ import (
 )
 
 type ProcessInfo struct {
-	Pid         int
 	ProcessName string
 	CPUUsage    float64
 	MemoryUsage float64
@@ -21,17 +20,21 @@ type SystemInfo struct {
 	MacAddress    string
 	CPUUsage      float64
 	MemoryUsage   float64
-	ProcessStates []ProcessInfo
+	ProcessStates []*ProcessInfo
 }
 
-func GetSystemInfo() SystemInfo {
+func GetSystemInfo() (SystemInfo, error) {
 	result := SystemInfo{}
-	result.MacAddress = getMacAddress()
-	topOutput := getTopCommandOutput()
-	result.CPUUsage = getSystemCPUUsage(topOutput)
-	result.MemoryUsage = getSystemMemoryUsage(topOutput)
-	getProcessStates(topOutput)
-	return result
+	if processNames, err := config.GetProcessNames(); err == nil {
+		result.MacAddress = getMacAddress()
+		topOutput := getTopCommandOutput()
+		result.CPUUsage = getSystemCPUUsage(topOutput)
+		result.MemoryUsage = getSystemMemoryUsage(topOutput)
+		result.ProcessStates = getProcessStates(topOutput, processNames)
+		return result, nil
+	} else {
+		return result, err
+	}
 }
 
 func getMacAddress() string {
@@ -76,14 +79,45 @@ func getSystemMemoryUsage(output []byte) float64 {
 	}
 }
 
-func getProcessStates(output []byte) []byte {
+func getProcessStates(output []byte, processNames []string) []*ProcessInfo {
 	scanner := bufio.NewScanner(bytes.NewReader(output))
 	scanner.Split(bufio.ScanLines)
-	regex, _ := regexp.Compile(`[0-9]+.*chrome`)
+	regex, _ := regexp.Compile(`^ *[0-9]+.*`)
+	whitespaceRegex, _ := regexp.Compile(`\s+`)
+	result := make(map[string]*ProcessInfo)
 	for scanner.Scan() {
-		if regex.MatchString(scanner.Text()) {
-			fmt.Println(scanner.Text())
+		text := scanner.Text()
+		if regex.MatchString(text) {
+			textItems := whitespaceRegex.Split(text, -1)
+			if isTargetProcess(processNames, textItems[12]) {
+				_, ok := result[textItems[12]]
+				if !ok {
+					result[textItems[12]] = &ProcessInfo{ProcessName: textItems[12], CPUUsage: 0, MemoryUsage: 0}
+				}
+				cpuUsage, _ := strconv.ParseFloat(textItems[9], 64)
+				memoryUsage, _ := strconv.ParseFloat(textItems[10], 64)
+				result[textItems[12]].CPUUsage += cpuUsage
+				result[textItems[12]].MemoryUsage += memoryUsage
+			}
 		}
 	}
-	return make([]byte, 0)
+	return getProcessInfoFromMap(result)
+}
+
+func isTargetProcess(processNames []string, processName string) bool {
+	for _, item := range processNames {
+		if item == processName {
+			return true
+		}
+	}
+
+	return false
+}
+
+func getProcessInfoFromMap(processInfo map[string]*ProcessInfo) []*ProcessInfo {
+	result := make([]*ProcessInfo, 0)
+	for _, item := range processInfo {
+		result = append(result, item)
+	}
+	return result
 }

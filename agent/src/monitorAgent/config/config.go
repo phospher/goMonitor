@@ -6,12 +6,15 @@ import (
 	"github.com/go-ini/ini"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const (
-	MainServerSectionName = "MainServer"
-	MainServerIpKeyName   = "IP"
-	MainServerPortKeyName = "Port"
+	MainServerSectionName    = "MainServer"
+	MainServerIpKeyName      = "IP"
+	MainServerPortKeyName    = "Port"
+	SystemSectionName        = "System"
+	SystemConcernedProcesses = "ConcernedProcesses"
 )
 
 func GetMainServerConfig() (string, error) {
@@ -33,6 +36,23 @@ func GetMainServerConfig() (string, error) {
 		return fmt.Sprintf("%s:%s", ip, port), nil
 	} else {
 		return "", errors.New("Can not find MainServer configuration")
+	}
+}
+
+func GetProcessNames() ([]string, error) {
+	cfg, err := ini.Load(getConfigFilePath())
+	if err != nil {
+		return make([]string, 0), err
+	}
+
+	if session, err := cfg.GetSection(SystemSectionName); err == nil {
+		processStr, err := getConfigValue(session, SystemConcernedProcesses)
+		if err != nil {
+			return make([]string, 0), err
+		}
+		return strings.Split(processStr, ","), nil
+	} else {
+		return make([]string, 0), err
 	}
 }
 
