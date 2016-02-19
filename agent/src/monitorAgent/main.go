@@ -1,17 +1,30 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	//"monitorAgent/config"
+	"monitorAgent/config"
+	"time"
+	"utils"
 )
 
 func main() {
-	if result, err := GetSystemInfo(); err == nil {
-		fmt.Println(result)
-		for _, item := range result.ProcessStates {
-			fmt.Println(item)
-		}
-	} else {
+	address, err := config.GetMainServerConfig()
+	if err != nil {
 		fmt.Println(err.Error())
+		return
+	}
+
+	for {
+		message := utils.Message{Type: "INFO"}
+		if systemInfo, err := GetSystemInfo(); err == nil {
+			messageContent, _ := json.Marshal(systemInfo)
+			message.Content = string(messageContent)
+			utils.SendMessage(address, &message)
+			time.Sleep(time.Second)
+		} else {
+			fmt.Println(err.Error())
+			return
+		}
 	}
 }
