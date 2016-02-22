@@ -4,9 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-ini/ini"
-	"os"
-	"path/filepath"
 	"strings"
+	"utils"
 )
 
 const (
@@ -18,17 +17,17 @@ const (
 )
 
 func GetMainServerConfig() (string, error) {
-	cfg, err := ini.Load(getConfigFilePath())
+	cfg, err := ini.Load(utils.GetConfigFilePath())
 	if err != nil {
 		return "", err
 	}
 
 	if session, err := cfg.GetSection(MainServerSectionName); err == nil {
-		ip, err := getConfigValue(session, MainServerIpKeyName)
+		ip, err := utils.GetConfigValue(session, MainServerIpKeyName)
 		if err != nil {
 			return "", err
 		}
-		port, err := getConfigValue(session, MainServerPortKeyName)
+		port, err := utils.GetConfigValue(session, MainServerPortKeyName)
 		if err != nil {
 			return "", err
 		}
@@ -40,13 +39,13 @@ func GetMainServerConfig() (string, error) {
 }
 
 func GetProcessNames() ([]string, error) {
-	cfg, err := ini.Load(getConfigFilePath())
+	cfg, err := ini.Load(utils.GetConfigFilePath())
 	if err != nil {
 		return make([]string, 0), err
 	}
 
 	if session, err := cfg.GetSection(SystemSectionName); err == nil {
-		processStr, err := getConfigValue(session, SystemConcernedProcesses)
+		processStr, err := utils.GetConfigValue(session, SystemConcernedProcesses)
 		if err != nil {
 			return make([]string, 0), err
 		}
@@ -54,17 +53,4 @@ func GetProcessNames() ([]string, error) {
 	} else {
 		return make([]string, 0), err
 	}
-}
-
-func getConfigValue(session *ini.Section, key string) (string, error) {
-	if session.HasKey(key) {
-		return session.Key(key).String(), nil
-	} else {
-		return "", fmt.Errorf("Can not find %s configuration", key)
-	}
-}
-
-func getConfigFilePath() string {
-	dirPath, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	return filepath.Join(dirPath, "config.ini")
 }

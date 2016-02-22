@@ -8,23 +8,11 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
+	"utils"
 )
 
-type ProcessInfo struct {
-	ProcessName string
-	CPUUsage    float64
-	MemoryUsage float64
-}
-
-type SystemInfo struct {
-	MacAddress    string
-	CPUUsage      float64
-	MemoryUsage   float64
-	ProcessStates []*ProcessInfo
-}
-
-func GetSystemInfo() (SystemInfo, error) {
-	result := SystemInfo{}
+func GetSystemInfo() (utils.SystemInfo, error) {
+	result := utils.SystemInfo{}
 	if processNames, err := config.GetProcessNames(); err == nil {
 		result.MacAddress = getMacAddress()
 		topOutput := getTopCommandOutput()
@@ -79,12 +67,12 @@ func getSystemMemoryUsage(output []byte) float64 {
 	}
 }
 
-func getProcessStates(output []byte, processNames []string) []*ProcessInfo {
+func getProcessStates(output []byte, processNames []string) []*utils.ProcessInfo {
 	scanner := bufio.NewScanner(bytes.NewReader(output))
 	scanner.Split(bufio.ScanLines)
 	regex, _ := regexp.Compile(`^ *[0-9]+.*`)
 	whitespaceRegex, _ := regexp.Compile(`\s+`)
-	result := make(map[string]*ProcessInfo)
+	result := make(map[string]*utils.ProcessInfo)
 	for scanner.Scan() {
 		text := scanner.Text()
 		if regex.MatchString(text) {
@@ -92,7 +80,7 @@ func getProcessStates(output []byte, processNames []string) []*ProcessInfo {
 			if isTargetProcess(processNames, textItems[12]) {
 				_, ok := result[textItems[12]]
 				if !ok {
-					result[textItems[12]] = &ProcessInfo{ProcessName: textItems[12], CPUUsage: 0, MemoryUsage: 0}
+					result[textItems[12]] = &utils.ProcessInfo{ProcessName: textItems[12], CPUUsage: 0, MemoryUsage: 0}
 				}
 				cpuUsage, _ := strconv.ParseFloat(textItems[9], 64)
 				memoryUsage, _ := strconv.ParseFloat(textItems[10], 64)
@@ -114,8 +102,8 @@ func isTargetProcess(processNames []string, processName string) bool {
 	return false
 }
 
-func getProcessInfoFromMap(processInfo map[string]*ProcessInfo) []*ProcessInfo {
-	result := make([]*ProcessInfo, 0)
+func getProcessInfoFromMap(processInfo map[string]*utils.ProcessInfo) []*utils.ProcessInfo {
+	result := make([]*utils.ProcessInfo, 0)
 	for _, item := range processInfo {
 		result = append(result, item)
 	}

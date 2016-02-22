@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"monitorAgent/config"
 	"time"
 	"utils"
@@ -11,7 +11,7 @@ import (
 func main() {
 	address, err := config.GetMainServerConfig()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Fatalln(err.Error())
 		return
 	}
 
@@ -23,7 +23,7 @@ func main() {
 			utils.SendMessage(address, &message)
 			time.Sleep(time.Second)
 		} else {
-			fmt.Println(err.Error())
+			log.Fatalln(err.Error())
 			return
 		}
 	}
