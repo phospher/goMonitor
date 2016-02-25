@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"gopkg.in/mgo.v2"
 	"io/ioutil"
 	"log"
@@ -31,7 +30,6 @@ func main() {
 }
 
 func persistSystemInfo(systemInfo *utils.SystemInfo) error {
-	fmt.Println("add")
 	connStr, err := config.GetDBConnectionString()
 	if err != nil {
 		return err
