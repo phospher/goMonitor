@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=10;" />
 	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="lib/ui-grid/ui-grid.min.css" />
 	<title>Dash Borad</title>
 </head>
 <body>
-	<div class="navbar navbar-default navbar-fixed-top">
+	<div class="navbar navbar-default">
 		<div class="container">
 			<div class="navbar-header">
 				<a href="#" class="navbar-brand">
@@ -17,6 +17,18 @@
 			</div>
 		</div>
 	</div>
+	<div class="container">
+		<div class="page-header" style="margin-top: 0px;">
+			<h4>Last&nbsp;5&nbsp;minutes&nbsp;system&nbsp;state</h4>
+		</div>
+		<div ng-controller="LatestController">
+			<div id="latestGrid" ui-grid="{ data: data}" class="grid"></div>
+		</div>
+	</div>
 	<script type="text/javascript" src="lib/angularjs/angular.min.js"></script>
+	<script type="text/javascript" src="lib/angularjs/angular-animate.min.js"></script>
+	<script type="text/javascript" src="lib/angularjs/angular-touch.min.js"></script>
+	<script type="text/javascript" src="lib/ui-grid/ui-grid.min.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
 </body>
 </html>
