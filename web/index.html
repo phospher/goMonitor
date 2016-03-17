@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html ng-app="index">
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=10;" />
 	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="lib/ui-grid/ui-grid.min.css" />
 	<title>Dash Borad</title>
+	<style type="text/css">
+		.ui-grid { color: #242729; }
+
+		.ui-grid-header, .ui-grid-column-menu { color: #fff; }
+	</style>
 </head>
 <body>
 	<div class="navbar navbar-default">
@@ -22,7 +27,7 @@
 			<h4>Last&nbsp;5&nbsp;minutes&nbsp;system&nbsp;state</h4>
 		</div>
 		<div ng-controller="LatestController">
-			<div id="latestGrid" ui-grid="{ data: data}" class="grid"></div>
+			<div id="latestGrid" ui-grid="gridOption" class="grid"></div>
 		</div>
 	</div>
 	<script type="text/javascript" src="lib/angularjs/angular.min.js"></script>

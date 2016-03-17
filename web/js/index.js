@@ -1,18 +1,28 @@
-var app = angular.module('app', ['ngTouch', 'ui.grid']);
+var app = angular.module('index', ['ngTouch', 'ui.grid']);
 
 app.controller('LatestController', ['$scope', function ($scope) {
-	$scope.data = [
-		{
-			'column1': 1,
-			'column2': 'test'
-		},
-		{
-			'column1': 2,
-			'column2': 'test'
-		},
-		{
-			'column1': 3,
-			'column2': 'test'
-		}
-	];
+	$scope.gridOption = {
+		columnDefs: [
+			{ name: 'IP Address', field: 'ip' },
+			{ name: 'CPU Usage Avg(%)', field: 'cpu' },
+			{ name: 'Mem Usage Avg(%)', field: 'mem' }
+		],
+		data: [
+			{
+				'ip': '10.10.10.10',
+				'cpu': 30,
+				'mem': 10
+			},
+			{
+				'ip': '10.10.10.10',
+				'cpu': 30,
+				'mem': 10
+			},
+			{
+				'ip': '10.10.10.10',
+				'cpu': 30,
+				'mem': 10
+			}
+		]
+	};
 }]);
