@@ -1,4 +1,6 @@
-<?php
+<?php 
+
+use App\SystemInfo;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,6 +13,10 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function() {
     return view('index');
+});
+
+Route::get('/GetSystemInfo', function() {
+    return response()->json(SystemInfo::all());
 });
