@@ -8,7 +8,5 @@ use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 class SystemInfo extends Eloquent {
 
     protected $collection = 'SystemInfo';
-    
-    
 
 }

@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"utils"
+	"strings"
 )
 
 func GetSystemInfo() (utils.SystemInfo, error) {
@@ -19,6 +20,7 @@ func GetSystemInfo() (utils.SystemInfo, error) {
 		result.CPUUsage = getSystemCPUUsage(topOutput)
 		result.MemoryUsage = getSystemMemoryUsage(topOutput)
 		result.ProcessStates = getProcessStates(topOutput, processNames)
+		result.IPAddress = getIPAddress()
 		return result, nil
 	} else {
 		return result, err
@@ -48,7 +50,7 @@ func getSystemCPUUsage(output []byte) float64 {
 	lineRegex, _ := regexp.Compile(`(([0-9]|\.)*)%? *id`)
 	resultStr := lineRegex.FindSubmatch(targetLine)
 	if len(resultStr) < 2 {
-		return 0
+		return -1
 	} else {
 		result, _ := strconv.ParseFloat(string(resultStr[1]), 64)
 		return (100 - result) / 100
@@ -56,12 +58,12 @@ func getSystemCPUUsage(output []byte) float64 {
 }
 
 func getSystemMemoryUsage(output []byte) float64 {
-	regex, _ := regexp.Compile(`Mem: *([0-9]*)[A-Za-z]* *total, *([0-9]*)[A-Za-z]* *used`)
+	regex, _ := regexp.Compile(`Mem *: *([0-9]*)[A-Za-z]* *total, *([0-9]*)[A-Za-z]* *free, *([0-9]*)[A-Za-z]* *used`)
 	resultStr := regex.FindSubmatch(output)
 	if len(resultStr) < 3 {
-		return 0
+		return -1
 	} else {
-		totalMem, _ := strconv.ParseFloat(string(resultStr[1]), 64)
+		totalMem, _ := strconv.ParseFloat(string(resultStr[0]), 64)
 		usedMem, _ := strconv.ParseFloat(string(resultStr[2]), 64)
 		return usedMem / totalMem
 	}
@@ -108,4 +110,13 @@ func getProcessInfoFromMap(processInfo map[string]*utils.ProcessInfo) []*utils.P
 		result = append(result, item)
 	}
 	return result
+}
+
+func getIPAddress() string {
+	ifaces, err := net.InterfaceAddrs()
+	if err != nil {
+		return ""
+	}
+
+	return strings.Split(ifaces[1].String(),"/")[0]
 }

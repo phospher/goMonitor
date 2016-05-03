@@ -1,7 +1,5 @@
 <?php 
 
-use App\SystemInfo;
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -17,6 +15,4 @@ Route::get('/', function() {
     return view('index');
 });
 
-Route::get('/GetSystemInfo', function() {
-    return response()->json(SystemInfo::all());
-});
+Route::get('/GetSystemInfo', 'SystemInfoController@GetLast5MinutesSystemInfo');

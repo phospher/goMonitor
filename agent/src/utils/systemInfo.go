@@ -1,14 +1,15 @@
 package utils
 
 type ProcessInfo struct {
-	ProcessName string `ProcessName`
+	ProcessName string  `ProcessName`
 	CPUUsage    float64 `CPUUsage`
 	MemoryUsage float64 `MemoryUsage`
 }
 
 type SystemInfo struct {
-	MacAddress    string `MacAddress`
-	CPUUsage      float64 `CPUUsage`
-	MemoryUsage   float64 `MemoryUsage`
+	MacAddress    string         `MacAddress`
+	CPUUsage      float64        `CPUUsage`
+	MemoryUsage   float64        `MemoryUsage`
+	IPAddress     string         `IPAddress`
 	ProcessStates []*ProcessInfo `ProcessStates`
 }
