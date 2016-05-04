@@ -8,8 +8,9 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
-	"utils"
 	"strings"
+	"time"
+	"utils"
 )
 
 func GetSystemInfo() (utils.SystemInfo, error) {
@@ -21,6 +22,7 @@ func GetSystemInfo() (utils.SystemInfo, error) {
 		result.MemoryUsage = getSystemMemoryUsage(topOutput)
 		result.ProcessStates = getProcessStates(topOutput, processNames)
 		result.IPAddress = getIPAddress()
+		result.Time = time.Now().Unix()
 		return result, nil
 	} else {
 		return result, err
@@ -63,8 +65,8 @@ func getSystemMemoryUsage(output []byte) float64 {
 	if len(resultStr) < 3 {
 		return -1
 	} else {
-		totalMem, _ := strconv.ParseFloat(string(resultStr[0]), 64)
-		usedMem, _ := strconv.ParseFloat(string(resultStr[2]), 64)
+		totalMem, _ := strconv.ParseFloat(string(resultStr[1]), 64)
+		usedMem, _ := strconv.ParseFloat(string(resultStr[3]), 64)
 		return usedMem / totalMem
 	}
 }
@@ -118,5 +120,13 @@ func getIPAddress() string {
 		return ""
 	}
 
-	return strings.Split(ifaces[1].String(),"/")[0]
+	var ipAddress string
+	for _, item := range ifaces {
+		ipAddress = strings.Split(item.String(), "/")[0]
+
+		if ipAddress != "::1" && ipAddress != "127.0.0.1" {
+			break
+		}
+	}
+	return ipAddress
 }

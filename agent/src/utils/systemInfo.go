@@ -11,5 +11,6 @@ type SystemInfo struct {
 	CPUUsage      float64        `CPUUsage`
 	MemoryUsage   float64        `MemoryUsage`
 	IPAddress     string         `IPAddress`
+	Time          int64          `Time`
 	ProcessStates []*ProcessInfo `ProcessStates`
 }

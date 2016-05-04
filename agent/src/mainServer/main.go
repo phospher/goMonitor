@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"gopkg.in/mgo.v2"
 	"io/ioutil"
 	"log"
 	"mainServer/config"
 	"net"
 	"utils"
+
+	"gopkg.in/mgo.v2"
 )
 
 var systemInfoChan chan *utils.SystemInfo
@@ -19,13 +20,16 @@ func init() {
 func main() {
 	go func() {
 		for {
-			persistSystemInfo(<-systemInfoChan)
+			perr := persistSystemInfo(<-systemInfoChan)
+			if perr != nil {
+				log.Fatalln(perr)
+			}
 		}
 	}()
 
 	err := startNetwork()
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln(err)
 	}
 }
 
@@ -71,19 +75,22 @@ func handleConnection(conn net.Conn) {
 
 	data, err := ioutil.ReadAll(conn)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(err)
 		return
 	}
 
 	var message utils.Message
 	err = json.Unmarshal(data, &message)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(err)
 		return
 	}
 
 	if message.Type == "INFO" {
-		prepareSaveSystemInfo(message.Content)
+		err = prepareSaveSystemInfo(message.Content)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 }
 
