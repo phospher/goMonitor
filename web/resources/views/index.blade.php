@@ -2,11 +2,7 @@
 
 @section('css')
 	<link rel="stylesheet" type="text/css" href="{{ url('lib/ui-grid/ui-grid.min.css') }}" />
-	<style type="text/css">
-		.ui-grid { color: #242729; }
-
-		.ui-grid-header, .ui-grid-column-menu { color: #fff; }
-	</style>
+	<link rel="stylesheet" type="text/css" href="{{ url('css/index.css') }}" />
 @endsection
 
 @section('javascript')

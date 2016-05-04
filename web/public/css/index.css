@@ -1,0 +1,11 @@
+.ui-grid { 
+    color: #242729; 
+}
+
+.ui-grid-header, .ui-grid-column-menu { 
+    color: #fff; 
+}
+
+.percent-cell {
+    text-align: right;
+}
