@@ -1,7 +1,7 @@
-<?php 
+<?php
 
 /*
-|--------------------------------------------------------------------------
+-----------------------------------------------------------------
 | Application Routes
 |--------------------------------------------------------------------------
 |
@@ -10,9 +10,11 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
-Route::get('/', function() {
-    return view('index');
+Route::group(['middleware'=>'auth'], function() {
+    
+    Route::get('/', function() {
+        return view('index');
+    });
+    
+    Route::get('/GetSystemInfo', 'SystemInfoController@GetLast5MinutesSystemInfo');
 });
-
-Route::get('/GetSystemInfo', 'SystemInfoController@GetLast5MinutesSystemInfo');
