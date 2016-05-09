@@ -1,5 +1,7 @@
 @extends('layouts.layout')
 
+@section('app', 'index')
+
 @section('css')
 	<link rel="stylesheet" type="text/css" href="{{ url('lib/ui-grid/ui-grid.min.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ url('css/index.css') }}" />
