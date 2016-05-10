@@ -11,13 +11,21 @@
 @endsection
 
 @section('content')
-	<div class="container">
-		<form name="form" class="form-horizontal" ng-control="RegisterController" novalidate>
+	<div class="container"  ng-controller="RegisterController">
+        @if (count($errors) > 0)
+            <div class="text-danger error-message">
+                @foreach ($errors->all() as $error)
+                    <p>{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
+		<form name="form" class="form-horizontal" action="" method="post" novalidate>
+            {{ csrf_field() }}
             <div class="form-group">
                 <label for="txtUserName" class="col-sm-4 control-label">User&nbsp;&nbsp;Name</label>
                 <div class="col-sm-5">
-                    <input type="text" id="txtUserName" name="userName" class="form-control" ng-model="user.userName" required/>
-                    <p class="text-danger" ng-show="(form.$submitted || form.userName.$touched) && form.userName.$error.required">
+                    <input type="text" id="txtUserName" name="name" class="form-control" ng-model="user.name" required/>
+                    <p class="text-danger" ng-show="(form.$submitted || form.name.$touched) && form.name.$error.required">
                         Please&nbsp;Enter&nbsp;User&nbsp;Name
                     </p>
                 </div>
@@ -46,11 +54,11 @@
             <div class="form-group">
                 <label for="txtConfirmPwd" class="col-sm-4 control-label">Conform&nbsp;&nbsp;Password</label>
                 <div class="col-sm-5">
-                    <input type="password" id="txtConfirmPwd" name="confirmPwd" class="form-control" ng-model="user.confirmPwd" ng-pattern="user.password" required/>
-                    <p class="text-danger" ng-show="(form.$submitted || form.confirmPwd.$touched) && form.confirmPwd.$error.required">
+                    <input type="password" id="txtConfirmPwd" name="password_confirmation" class="form-control" ng-model="user.password_confirmation" ng-pattern="user.password" required/>
+                    <p class="text-danger" ng-show="(form.$submitted || form.password_confirmation.$touched) && form.password_confirmation.$error.required">
                         Please&nbsp;Conform&nbsp;Your&nbsp;Password
                     </p>
-                    <p class="text-danger" ng-show="(form.$submitted || form.confirmPwd.$touched) && form.confirmPwd.$error.pattern">
+                    <p class="text-danger" ng-show="(form.$submitted || form.password_confirmation.$touched) && form.password_confirmation.$error.pattern">
                         Not&nbsp;The&nbsp;Same&nbsp;Password
                     </p>
                 </div>
@@ -73,20 +81,23 @@
                 <label class="col-sm-4 control-label">Is&nbsp;He&nbsp;Handsome?</label>
                 <div class="col-sm-5">
                     <label class="radio-inline">
-                        <input type="radio" name="handsome" value="yes" ng-model="user.handsome" required> Yes
+                        <input type="radio" name="handsome" value="yes" ng-model="user.handsome" compare-to="yes" required> Yes
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="handsome" value="no" ng-model="user.handsome" required> No
+                        <input type="radio" name="handsome" value="no" ng-model="user.handsome" compare-to="yes" required> No
                     </label>
                     <p class="text-danger" ng-show="(form.$submitted || form.handsome.$touched) && user.known == 'yes' && form.handsome.$error.required">
                         Is&nbsp;He&nbsp;Handsome?
+                    </p>
+                    <p class="text-danger" ng-show="(form.$submitted || form.handsome.$touched) && user.known == 'yes' && form.handsome.$error.compareTo">
+                        No!&nbsp;He&nbsp;is&nbsp;handsome!
                     </p>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-5">
-                    <input type="submit" class="btn" value="Submit" ng-click="register(user)" />
+                    <input type="submit" class="btn" value="Submit" />
                 </div>
             </div>
         </form>

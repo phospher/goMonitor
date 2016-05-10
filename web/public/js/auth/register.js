@@ -1,22 +1,19 @@
 var app = angular.module('register', []);
 
-app.directive('radioRequired', function () {
+app.directive('compareTo', function () {
      return {
          require: '?ngModel',
-         scope: {
-            modelField: '='  
-         },
          link: function(scope, elm, attrs, ctrl) {
-             ctrl.$validators.radioRequried = function(modelValue) {
-                 alert(!ctrl.$isEmpty(modelValue))
-                 return !ctrl.$isEmpty(modelValue);
+             ctrl.$validators.compareTo = function(modelValue, viewValue) {
+                 if (ctrl.$isEmpty(modelValue)) {
+                     return true;
+                 }
+                 return modelValue == attrs.compareTo;
              }
          }
      }
 });
 
-app.controller('RegisterController', ['$scope', function($scope) {
-    $scope.register = function(user) {
-          
-    };
+app.controller('RegisterController', ['$scope', function($scope, $http) {
+
 }]);

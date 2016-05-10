@@ -7,6 +7,7 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Log;
 
 class AuthController extends Controller
 {
@@ -29,8 +30,6 @@ class AuthController extends Controller
      * @var string
      */
     protected $redirectTo = '/';
-    
-    protected $registerView = 'auth.register';
 
     /**
      * Create a new authentication controller instance.
@@ -53,7 +52,7 @@ class AuthController extends Controller
         return Validator::make($data, [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|confirmed',
         ]);
     }
 
@@ -65,6 +64,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
+        Log::debug($data);
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],

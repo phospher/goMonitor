@@ -1,3 +1,7 @@
 input.ng-invalid.ng-touched {
     border-color: #a94442;
 }
+
+.error-message {
+    text-align: center;
+}
