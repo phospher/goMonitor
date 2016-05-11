@@ -15,6 +15,11 @@
 					Dash&nbsp;Borad
 				</a>
 			</div>
+			@if(Auth::check())
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="{{ action('Auth\AuthController@logout') }}">Logout</a></li>
+				</ul>
+			@endif
 		</div>
 	</div>
 	@yield('content')

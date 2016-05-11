@@ -12,6 +12,9 @@
 
 @section('content')
 	<div class="container"  ng-controller="RegisterController">
+        <div class="page-header">
+            <h3>Register</h3>
+        </div>
         @if (count($errors) > 0)
             <div class="text-danger error-message">
                 @foreach ($errors->all() as $error)
@@ -19,7 +22,7 @@
                 @endforeach
             </div>
         @endif
-		<form name="form" class="form-horizontal" action="" method="post" novalidate>
+		<form id="registerForm" name="form" class="form-horizontal" method="post" ng-submit="form.$valid && submit()" novalidate>
             {{ csrf_field() }}
             <div class="form-group">
                 <label for="txtUserName" class="col-sm-4 control-label">User&nbsp;&nbsp;Name</label>
@@ -67,13 +70,16 @@
                 <label class="col-sm-4 control-label">Do&nbsp;You&nbsp;Know&nbsp;Phospher?</label>
                 <div class="col-sm-5">
                     <label class="radio-inline">
-                        <input type="radio" name="known" value="yes" ng-model="user.known" required> Yes
+                        <input type="radio" name="known" value="yes" ng-model="user.known" compare-to="yes" required> Yes
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="known" value="no" ng-model="user.known" required> No
+                        <input type="radio" name="known" value="no" ng-model="user.known" compare-to="yes" required> No
                     </label>
                     <p class="text-danger" ng-show="(form.$submitted || form.known.$touched) && form.known.$error.required">
                         Do&nbsp;You&nbsp;Know&nbsp;Phospher?
+                    </p>
+                    <p class="text-danger" ng-show="(form.$submitted || form.known.$touched) && form.known.$error.compareTo">
+                        You&nbsp;Can&nbsp;Not&nbsp;Access&nbsp;This&nbsp;System!
                     </p>
                 </div>
             </div>

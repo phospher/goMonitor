@@ -15,5 +15,7 @@ app.directive('compareTo', function () {
 });
 
 app.controller('RegisterController', ['$scope', function($scope, $http) {
-
+    $scope.submit = function() {
+        document.getElementById('registerForm').submit();
+    };
 }]);
