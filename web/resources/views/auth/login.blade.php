@@ -48,6 +48,17 @@
             <div class="form-group">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-5">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="remember" value="remember" />
+                            Remember&nbsp;Me
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-5">
                     <input type="submit" class="btn" value="Login" />
                     <a href="{{ action('Auth\AuthController@showRegistrationForm') }}" class="register-link">Register</a>
                 </div>
