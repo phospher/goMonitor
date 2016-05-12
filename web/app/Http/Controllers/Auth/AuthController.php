@@ -53,6 +53,8 @@ class AuthController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed',
+            'known' => 'required|in:yes',
+            'handsome' => 'required_if:known,yes|in:yes'
         ]);
     }
 

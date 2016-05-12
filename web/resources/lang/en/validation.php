@@ -92,8 +92,13 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'known' => [
+            'required' => 'Do You Known Phospher?',
+            'in' => 'You Can Not Access This System!'
+        ],
+        'handsome' => [
+            'required_if' => 'Is He Handsome?',
+            'in' => 'No! He Is Handsome!'
         ],
     ],
 
