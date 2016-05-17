@@ -13,7 +13,7 @@ import (
 	"utils"
 )
 
-func GetSystemInfo(t time.Time) (utils.SystemInfo, error) {
+func GetSystemInfo() (utils.SystemInfo, error) {
 	result := utils.SystemInfo{}
 	if processNames, err := config.GetProcessNames(); err == nil {
 		result.MacAddress = getMacAddress()
@@ -22,7 +22,7 @@ func GetSystemInfo(t time.Time) (utils.SystemInfo, error) {
 		result.MemoryUsage = getSystemMemoryUsage(topOutput)
 		result.ProcessStates = getProcessStates(topOutput, processNames)
 		result.IPAddress = getIPAddress()
-		result.Time = t.Unix()
+		result.Time = time.Now().Unix()
 		return result, nil
 	} else {
 		return result, err

@@ -17,9 +17,9 @@ func main() {
 
 	ticker := time.NewTicker(time.Second)
 
-	for t := range ticker.C {
+	for range ticker.C {
 		message := utils.Message{Type: "INFO"}
-		if systemInfo, err := GetSystemInfo(t); err == nil {
+		if systemInfo, err := GetSystemInfo(); err == nil {
 			messageContent, err := json.Marshal(systemInfo)
 			if err != nil {
 				log.Fatalln(err)
