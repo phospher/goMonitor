@@ -1,37 +1,43 @@
 package config
 
 import (
-	"github.com/go-ini/ini"
 	"utils"
+
+	"github.com/go-ini/ini"
 )
 
 const (
-	DBConnectionStringValueName = "DBConnectionString"
-	PortValueName               = "Port"
+	DBConnectionStringValueName    = "DBConnectionString"
+	PortValueName                  = "Port"
+	SqlDBConnectionStringValueName = "SqlDBConnectionString"
+	SqlDBDirverNameValueName       = "SqlDBDriverName"
 )
 
-func GetDBConnectionString() (string, error) {
+func getConfigValue(valueName string)(string,error)  {
 	cfg, err := ini.Load(utils.GetConfigFilePath())
 	if err != nil {
 		return "", err
 	}
 
 	if session, err := cfg.GetSection(""); err == nil {
-		return utils.GetConfigValue(session, DBConnectionStringValueName)
+		return utils.GetConfigValue(session, valueName)
 	} else {
 		return "", err
 	}
 }
 
-func GetListeningPort() (string, error) {
-	cfg, err := ini.Load(utils.GetConfigFilePath())
-	if err != nil {
-		return "", err
-	}
+func GetDBConnectionString() (string, error) {
+	return getConfigValue(DBConnectionStringValueName)
+}
 
-	if session, err := cfg.GetSection(""); err == nil {
-		return utils.GetConfigValue(session, PortValueName)
-	} else {
-		return "", err
-	}
+func GetListeningPort() (string, error) {
+	return getConfigValue(PortValueName)
+}
+
+func GetSqlDBConnectionString() (string, error) {
+	return getConfigValue(SqlDBConnectionStringValueName)
+}
+
+func GetSqlDBDriverName() (string, error) {
+	return getConfigValue(SqlDBDirverNameValueName)
 }

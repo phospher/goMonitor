@@ -5,10 +5,9 @@ import (
 	"io/ioutil"
 	"log"
 	"mainServer/config"
+	"mainServer/persist"
 	"net"
 	"utils"
-
-	"gopkg.in/mgo.v2"
 )
 
 var systemInfoChan chan *utils.SystemInfo
@@ -20,9 +19,15 @@ func init() {
 func main() {
 	go func() {
 		for {
-			perr := persistSystemInfo(<-systemInfoChan)
+			systemInfo := <-systemInfoChan
+			perr := persist.AddMachineRecord(persist.MachineRecord{IpAddress: systemInfo.IPAddress, MacAddress: systemInfo.MacAddress})
 			if perr != nil {
-				log.Fatalln(perr)
+				log.Fatalln(perr.Error())
+			}
+
+			perr = persist.PersistSystemInfo(systemInfo)
+			if perr != nil {
+				log.Fatalln(perr.Error())
 			}
 		}
 	}()
@@ -31,21 +36,6 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-}
-
-func persistSystemInfo(systemInfo *utils.SystemInfo) error {
-	connStr, err := config.GetDBConnectionString()
-	if err != nil {
-		return err
-	}
-
-	session, err := mgo.Dial(connStr)
-	if err != nil {
-		return err
-	}
-
-	collection := session.DB("Monitor").C("SystemInfo")
-	return collection.Insert(systemInfo)
 }
 
 func startNetwork() error {
