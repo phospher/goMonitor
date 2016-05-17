@@ -15,17 +15,19 @@ func main() {
 		return
 	}
 
-	for {
+	ticker := time.NewTicker(time.Second)
+
+	for t := range ticker.C {
 		message := utils.Message{Type: "INFO"}
-		if systemInfo, err := GetSystemInfo(); err == nil {
+		if systemInfo, err := GetSystemInfo(t); err == nil {
 			messageContent, err := json.Marshal(systemInfo)
 			if err != nil {
 				log.Fatalln(err)
 			}
 			message.Content = string(messageContent)
 			utils.SendMessage(address, &message)
-			time.Sleep(time.Second)
 		} else {
+			ticker.Stop()
 			log.Fatalln(err)
 			return
 		}
