@@ -1,23 +1,21 @@
 package persist
 
-import (
-	"mainServer/config"
-	"utils"
+import "utils"
 
-	"gopkg.in/mgo.v2"
-)
+type SystemInfoRepository interface {
+	PersistSystemInfo(systemInfo *utils.SystemInfo) error
+}
 
-func PersistSystemInfo(systemInfo *utils.SystemInfo) error {
-	connStr, err := config.GetDBConnectionString()
-	if err != nil {
-		return err
+func RegisterSystemInfoRepository(repository interface{}) {
+	utils.RegisterIocImplement("SystemInfoRepository", repository)
+}
+
+func NewSystemInfoRepository() (*SystemInfoRepository, error) {
+	result, err := utils.NewImplement("SystemInfoRepository")
+	if err == nil {
+		resultRepository := result.(SystemInfoRepository)
+		return &resultRepository, nil
+	} else {
+		return nil, err
 	}
-
-	session, err := mgo.Dial(connStr)
-	if err != nil {
-		return err
-	}
-
-	collection := session.DB("Monitor").C("SystemInfo")
-	return collection.Insert(systemInfo)
 }

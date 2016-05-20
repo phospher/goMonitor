@@ -1,12 +1,11 @@
 package persist
 
 import (
-	"log"
-	"mainServer/config"
-
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/xorm"
+	"reflect"
+	"utils"
 )
+
+var machineRecordRepositoryType reflect.Type
 
 type MachineRecord struct {
 	Id            int64
@@ -16,48 +15,20 @@ type MachineRecord struct {
 	LastUpdatedAt int64 `xorm:"updated"`
 }
 
-var engine *xorm.Engine
-
-func init() {
-	connString, err := config.GetSqlDBConnectionString()
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	driverName, err := config.GetSqlDBDriverName()
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	engine, err = xorm.NewEngine(driverName, connString)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	err = engine.Sync2(new(MachineRecord))
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
+type MachineRecordRepository interface {
+	AddMachineRecord(machineRecord MachineRecord) error
 }
 
-func AddMachineRecord(machineRecord MachineRecord) error {
-	searchResult := MachineRecord{IpAddress: machineRecord.IpAddress, MacAddress: machineRecord.MacAddress}
-	has, err := engine.Get(&searchResult)
-	if err != nil {
-		return err
-	}
+func RegisterMachineRecordRepository(repository interface{}) {
+	utils.RegisterIocImplement("MachineRecordRepository", repository)
+}
 
-	if has {
-		_, err = engine.Update(searchResult)
-		if err != nil {
-			return err
-		}
+func NewMachineRepository() (*MachineRecordRepository, error) {
+	result, err := utils.NewImplement("MachineRecordRepository")
+	if err == nil {
+		resultRepository := result.(MachineRecordRepository)
+		return &resultRepository, nil
 	} else {
-		_, err = engine.Insert(machineRecord)
-		if err != nil {
-			return err
-		}
+		return nil, err
 	}
-
-	return nil
 }
