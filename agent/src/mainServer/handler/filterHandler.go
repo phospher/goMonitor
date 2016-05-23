@@ -10,9 +10,6 @@ var systemInfoFilters []reflect.Type
 
 func AddSystemInfoFilter(systeInfoFilter interface{}) error {
 	value := reflect.ValueOf(systeInfoFilter)
-	if value.Kind() == reflect.Ptr {
-		value = value.Elem()
-	}
 
 	filterInterfaceType := reflect.TypeOf((*filter.SystemInfoFilter)(nil)).Elem()
 	valueType := value.Type()
