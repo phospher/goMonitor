@@ -5,29 +5,26 @@ import (
 	"io/ioutil"
 	"log"
 	"mainServer/config"
-	"mainServer/persist"
 	"net"
 	"utils"
 )
 
 type NetworkHandler struct {
-	machineRecordRepository *persist.MachineRecordRepository
-	systemInfoRepository    *persist.SystemInfoRepository
-	systemInfoChan          chan *utils.SystemInfo
+	systemInfoChan chan *utils.SystemInfo
 }
 
 func (handler *NetworkHandler) StartPersitMessage() {
 	go func() {
 		for {
 			systemInfo := <-handler.systemInfoChan
-			perr := (*handler.machineRecordRepository).AddMachineRecord(persist.MachineRecord{IpAddress: systemInfo.IPAddress, MacAddress: systemInfo.MacAddress})
-			if perr != nil {
-				log.Fatalln(perr.Error())
-			}
-
-			perr = (*handler.systemInfoRepository).PersistSystemInfo(systemInfo)
-			if perr != nil {
-				log.Fatalln(perr.Error())
+			systemInfoFilters := SystemInfoFiltersIter{}
+			data := *systemInfo
+			var err error
+			for item := systemInfoFilters.Next(); item != nil; {
+				data, err = (*item).Process(data)
+				if err != nil {
+					log.Fatalln(err.Error())
+				}
 			}
 		}
 	}()
@@ -90,6 +87,6 @@ func (handler *NetworkHandler) prepareSaveSystemInfo(systemInfoJson string) erro
 	return nil
 }
 
-func NewNetworkHandler(machineRecordRepository *persist.MachineRecordRepository, systemInfoRepository *persist.SystemInfoRepository) *NetworkHandler {
-	return &NetworkHandler{machineRecordRepository: machineRecordRepository, systemInfoRepository: systemInfoRepository, systemInfoChan: make(chan *utils.SystemInfo, 1000)}
+func NewNetworkHandler() *NetworkHandler {
+	return &NetworkHandler{systemInfoChan: make(chan *utils.SystemInfo, 1000)}
 }

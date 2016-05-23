@@ -2,27 +2,26 @@ package main
 
 import (
 	"log"
+	"mainServer/filter"
 	"mainServer/handler"
-	"mainServer/persist"
-	_ "mainServer/persist/mongodb"
-	_ "mainServer/persist/mysql"
 )
 
+func init() {
+
+}
+
 func main() {
-	machineRecordRepository, err := persist.NewMachineRepository()
-	if err != nil {
-		log.Fatalln(err.Error())
+	perr := handler.AddSystemInfoFilter(filter.MySqlMachineRecordFilter{})
+
+	perr = handler.AddSystemInfoFilter(filter.LogSystemInfoFilter{})
+	if perr != nil {
+		log.Fatalln(perr)
 	}
 
-	systemInfoRepository, err := persist.NewSystemInfoRepository()
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	networkHandler := handler.NewNetworkHandler(machineRecordRepository, systemInfoRepository)
+	networkHandler := handler.NewNetworkHandler()
 	networkHandler.StartPersitMessage()
 
-	err = networkHandler.StartNetwork()
+	err := networkHandler.StartNetwork()
 	if err != nil {
 		log.Fatalln(err)
 	}

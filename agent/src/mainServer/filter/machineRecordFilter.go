@@ -1,14 +1,22 @@
-package mysql
+package filter
 
 import (
 	"log"
 	"mainServer/config"
 
-	"mainServer/persist"
+	"utils"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 )
+
+type MachineRecord struct {
+	Id            int64
+	IpAddress     string
+	MacAddress    string
+	CreatedAt     int64 `xorm:"created"`
+	LastUpdatedAt int64 `xorm:"updated"`
+}
 
 var engine *xorm.Engine
 
@@ -28,35 +36,33 @@ func init() {
 		log.Fatalln(err.Error())
 	}
 
-	err = engine.Sync2(new(persist.MachineRecord))
+	err = engine.Sync2(new(MachineRecord))
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-
-	persist.RegisterMachineRecordRepository(new(MySqlMachineRecordRepository))
 }
 
-type MySqlMachineRecordRepository struct {
+type MySqlMachineRecordFilter struct {
 }
 
-func (o *MySqlMachineRecordRepository) AddMachineRecord(machineRecord persist.MachineRecord) error {
-	searchResult := persist.MachineRecord{IpAddress: machineRecord.IpAddress, MacAddress: machineRecord.MacAddress}
+func (this MySqlMachineRecordFilter) Process(systemInfo utils.SystemInfo) (utils.SystemInfo, error) {
+	searchResult := MachineRecord{IpAddress: systemInfo.IPAddress, MacAddress: systemInfo.MacAddress}
 	has, err := engine.Get(&searchResult)
 	if err != nil {
-		return err
+		return systemInfo, err
 	}
 
 	if has {
 		_, err = engine.Id(searchResult.Id).Update(searchResult)
 		if err != nil {
-			return err
+			return systemInfo, err
 		}
 	} else {
-		_, err = engine.Insert(machineRecord)
+		_, err = engine.Insert(MachineRecord{IpAddress: systemInfo.IPAddress, MacAddress: systemInfo.MacAddress})
 		if err != nil {
-			return err
+			return systemInfo, err
 		}
 	}
 
-	return nil
+	return systemInfo, nil
 }
