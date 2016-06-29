@@ -10,9 +10,12 @@ type SendAlertHelper interface {
 	Send(message *AlertMessage) error
 }
 
-var sendAlertHelper *SendAlertHelper
+var sendAlertHelper SendAlertHelper
 
-func InitSendAlertHelper(sendAlertHelper SendAlertHelper) error {
-	//value := reflect.ValueOf(sendAlertHelper)
-	return nil
+func InitSendAlertHelper(sendAlertHelperImpl SendAlertHelper) {
+	sendAlertHelper = sendAlertHelperImpl
+}
+
+func SendAlert(message *AlertMessage) error {
+	return sendAlertHelper.Send(message)
 }
