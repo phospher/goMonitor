@@ -20,7 +20,7 @@ func (handler *NetworkHandler) StartPersitMessage() {
 			systemInfoFilters := SystemInfoFiltersIter{}
 			data := *systemInfo
 			var err error
-			for item := systemInfoFilters.Next(); item != nil; {
+			for item := systemInfoFilters.Next(); item != nil; item = systemInfoFilters.Next() {
 				data, err = (*item).Process(data)
 				if err != nil {
 					log.Fatalln(err.Error())

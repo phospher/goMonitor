@@ -8,17 +8,14 @@ import (
 
 var systemInfoFilters []reflect.Type
 
-func AddSystemInfoFilter(systeInfoFilter interface{}) error {
-	value := reflect.ValueOf(systeInfoFilter)
-
-	filterInterfaceType := reflect.TypeOf((*filter.SystemInfoFilter)(nil)).Elem()
-	valueType := value.Type()
-	if valueType.Implements(filterInterfaceType) {
-		systemInfoFilters = append(systemInfoFilters, valueType)
-		return nil
-	} else {
-		return errors.New("Object must implement SystemInfoFilter")
+func AddSystemInfoFilter(systeInfoFilter filter.SystemInfoFilter) error {
+	if systeInfoFilter == nil {
+		return errors.New("Object can not be null")
 	}
+	valueType := reflect.TypeOf(systeInfoFilter)
+	systemInfoFilters = append(systemInfoFilters, valueType)
+
+	return nil
 }
 
 type SystemInfoFiltersIter struct {
