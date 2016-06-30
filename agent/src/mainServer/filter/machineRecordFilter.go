@@ -2,9 +2,10 @@ package filter
 
 import (
 	"log"
-	"mainServer/config"
 
 	"utils"
+
+	mainServerUtils "mainServer/utils"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
@@ -21,17 +22,7 @@ type MachineRecord struct {
 var engine *xorm.Engine
 
 func init() {
-	connString, err := config.GetSqlDBConnectionString()
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	driverName, err := config.GetSqlDBDriverName()
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	engine, err = xorm.NewEngine(driverName, connString)
+	engine, err := mainServerUtils.GetXormEngine()
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

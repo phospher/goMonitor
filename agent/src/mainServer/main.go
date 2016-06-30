@@ -1,28 +1,15 @@
 package main
 
-import (
-	"log"
-	"mainServer/filter"
-	"mainServer/handler"
-)
+import "mainServer/service"
+
+var services []func()
 
 func init() {
-
+	services = []func(){service.StartHeartbeatService, service.StartCollectSystemService}
 }
 
 func main() {
-	perr := handler.AddSystemInfoFilter(filter.MySqlMachineRecordFilter{})
-
-	perr = handler.AddSystemInfoFilter(filter.LogSystemInfoFilter{})
-	if perr != nil {
-		log.Fatalln(perr)
-	}
-
-	networkHandler := handler.NewNetworkHandler()
-	networkHandler.StartPersitMessage()
-
-	err := networkHandler.StartNetwork()
-	if err != nil {
-		log.Fatalln(err)
+	for _, item := range services {
+		item()
 	}
 }
