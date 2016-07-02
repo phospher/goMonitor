@@ -7,11 +7,11 @@ import (
 
 	"time"
 
-	"mainServer/filter"
-
 	"mainServer/message"
 
 	"fmt"
+
+	"mainServer/dataEntity"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
@@ -35,7 +35,7 @@ func StartHeartbeatService() {
 	go func() {
 		ticker := time.NewTicker(heartbeatInterval)
 		for t := range ticker.C {
-			var machines []filter.MachineRecord
+			var machines []dataEntity.MachineRecord
 			engine.Where("last_updated_at < ?", t.Unix()-5).Find(&machines)
 			if machines != nil && len(machines) > 0 {
 				for _, item := range machines {

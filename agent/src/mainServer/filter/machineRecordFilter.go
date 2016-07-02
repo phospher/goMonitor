@@ -7,27 +7,17 @@ import (
 
 	mainServerUtils "mainServer/utils"
 
+	"mainServer/dataEntity"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 )
 
-type MachineRecord struct {
-	Id            int64
-	IpAddress     string
-	MacAddress    string
-	CreatedAt     int64 `xorm:"created"`
-	LastUpdatedAt int64 `xorm:"updated"`
-}
-
 var engine *xorm.Engine
 
 func init() {
-	engine, err := mainServerUtils.GetXormEngine()
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	err = engine.Sync2(new(MachineRecord))
+	var err error
+	engine, err = mainServerUtils.GetXormEngine()
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -37,7 +27,7 @@ type MySqlMachineRecordFilter struct {
 }
 
 func (this MySqlMachineRecordFilter) Process(systemInfo utils.SystemInfo) (utils.SystemInfo, error) {
-	searchResult := MachineRecord{IpAddress: systemInfo.IPAddress, MacAddress: systemInfo.MacAddress}
+	searchResult := dataEntity.MachineRecord{IpAddress: systemInfo.IPAddress, MacAddress: systemInfo.MacAddress}
 	has, err := engine.Get(&searchResult)
 	if err != nil {
 		return systemInfo, err
@@ -49,7 +39,7 @@ func (this MySqlMachineRecordFilter) Process(systemInfo utils.SystemInfo) (utils
 			return systemInfo, err
 		}
 	} else {
-		_, err = engine.Insert(MachineRecord{IpAddress: systemInfo.IPAddress, MacAddress: systemInfo.MacAddress})
+		_, err = engine.Insert(dataEntity.MachineRecord{IpAddress: systemInfo.IPAddress, MacAddress: systemInfo.MacAddress})
 		if err != nil {
 			return systemInfo, err
 		}
