@@ -1,6 +1,6 @@
 var app = angular.module('index', ['ngTouch', 'ui.grid']);
 
-app.controller('LatestController', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+app.controller('LatestController', ['$scope', '$http', '$interval', '$window', function ($scope, $http, $interval, $window) {
 
 	getSystemInfo = function (callback) {
 		$http.get('/GetSystemInfo').then(function (response) {
@@ -27,12 +27,17 @@ app.controller('LatestController', ['$scope', '$http', '$interval', function ($s
 			getSystemInfo();
 		}, 5000);
 	});
+	
+	$scope.toMachineDetailPage = function (ip) {
+		$window.location.href = '/machinedetail/' + decodeURIComponent(ip);
+	};
 
 	$scope.gridOption = {
 		columnDefs: [
 			{ name: 'IP Address', field: 'ip' },
 			{ name: 'CPU Usage Avg(%)', field: 'cpu', cellClass: 'percent-cell' },
-			{ name: 'Mem Usage Avg(%)', field: 'mem', cellClass: 'percent-cell' }
+			{ name: 'Mem Usage Avg(%)', field: 'mem', cellClass: 'percent-cell' },
+			{ name: '', field: 'ip', cellTemplate: '<div class="ui-grid-cell-contents ng-binding"><a href="javascript:void(0);" ng-click="grid.appScope.toMachineDetailPage(COL_FIELD)">Detail</a></div>' }
 		],
 		data: []
 	};
