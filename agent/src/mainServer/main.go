@@ -1,11 +1,18 @@
 package main
 
-import "mainServer/service"
+import (
+	"mainServer/service"
+	"mainServer/utils"
+	"time"
+)
 
 var services []func()
 
 func init() {
-	services = []func(){service.StartHeartbeatService, service.StartCollectSystemService}
+	services = []func(){
+		utils.CreateIntervalBackendFunc(service.RunHearbeat, 5*time.Second),
+		service.StartCollectSystemService,
+	}
 }
 
 func main() {

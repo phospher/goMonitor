@@ -3,6 +3,7 @@ package utils
 import (
 	"log"
 	"mainServer/config"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
@@ -25,4 +26,18 @@ func GetXormEngine() (*xorm.Engine, error) {
 	}
 
 	return engine, nil
+}
+
+func CreateIntervalBackendFunc(function func(time.Time) error, interval time.Duration) func() {
+	return func() {
+		go func() {
+			ticker := time.NewTicker(interval)
+			for t := range ticker.C {
+				err := function(t)
+				if err != nil {
+					log.Panicln(err.Error())
+				}
+			}
+		}()
+	}
 }

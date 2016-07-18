@@ -31,19 +31,15 @@ func init() {
 	message.InitSendAlertHelper(new(message.LogSendAlertHelper))
 }
 
-func StartHeartbeatService() {
-	go func() {
-		ticker := time.NewTicker(heartbeatInterval)
-		for t := range ticker.C {
-			var machines []dataEntity.MachineRecord
-			engine.Where("last_updated_at < ?", t.Unix()-5).Find(&machines)
-			if machines != nil && len(machines) > 0 {
-				for _, item := range machines {
-					alertMsg := new(message.AlertMessage)
-					alertMsg.Content = fmt.Sprintf("%s(%s) is offine", item.IpAddress, item.MacAddress)
-					message.SendAlert(alertMsg)
-				}
-			}
+func RunHearbeat(t time.Time) error {
+	var machines []dataEntity.MachineRecord
+	engine.Where("last_updated_at < ?", t.Unix()-5).Find(&machines)
+	if machines != nil && len(machines) > 0 {
+		for _, item := range machines {
+			alertMsg := new(message.AlertMessage)
+			alertMsg.Content = fmt.Sprintf("%s(%s) is offine", item.IpAddress, item.MacAddress)
+			message.SendAlert(alertMsg)
 		}
-	}()
+	}
+	return nil
 }
