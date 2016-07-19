@@ -18,4 +18,8 @@ class SystemInfoController extends Controller {
     public function GetLast5MinutesSystemInfo() {
         return response()->json($this->systemInfoRepository->GetLast5MinuteSystemInfo());
     }
+    
+    public function GetMachineDetail($ip) {
+        return response()->json($this->systemInfoRepository->GetMachineDetail($ip));
+    }
 }

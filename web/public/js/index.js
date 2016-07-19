@@ -3,7 +3,7 @@ var app = angular.module('index', ['ngTouch', 'ui.grid']);
 app.controller('LatestController', ['$scope', '$http', '$interval', '$window', function ($scope, $http, $interval, $window) {
 
 	getSystemInfo = function (callback) {
-		$http.get('/GetSystemInfo').then(function (response) {
+		$http.get('/SystemInfo/Last5Min').then(function (response) {
 
 			var data = [];
 
