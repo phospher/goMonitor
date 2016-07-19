@@ -6,6 +6,10 @@
 	<link rel="stylesheet" type="text/css" href="{{ url('lib/bootstrap/css/bootstrap.min.css') }}" />
 	<title>Dash Borad</title>
 	@yield('css')
+	<script type="text/javascript" src="{{ url('lib/angularjs/angular.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url('lib/angularjs/angular-animate.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url('lib/angularjs/angular-touch.min.js') }}"></script>
+	@yield('javascript')
 </head>
 <body>
 	<div class="navbar navbar-default">
@@ -23,9 +27,5 @@
 		</div>
 	</div>
 	@yield('content')
-	<script type="text/javascript" src="{{ url('lib/angularjs/angular.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url('lib/angularjs/angular-animate.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url('lib/angularjs/angular-touch.min.js') }}"></script>
-	@yield('javascript')
 </body>
 </html>

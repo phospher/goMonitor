@@ -6,5 +6,5 @@ interface SystemInfoRepository {
     
     function GetLast5MinuteSystemInfo();
     
-    function GetMachineDetail($ip);
+    function GetProcessStatesByMachine($ip);
 }

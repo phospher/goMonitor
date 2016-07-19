@@ -19,7 +19,11 @@ class SystemInfoController extends Controller {
         return response()->json($this->systemInfoRepository->GetLast5MinuteSystemInfo());
     }
     
-    public function GetMachineDetail($ip) {
-        return response()->json($this->systemInfoRepository->GetMachineDetail($ip));
+    public function GetProcessStatesByMachine($ip) {
+        return response()->json($this->systemInfoRepository->GetProcessStatesByMachine($ip));
+    }
+    
+    public function GetSystemInfoDetail($ip){
+        return view("systemInfo/detail", ['ip' => $ip]);
     }
 }

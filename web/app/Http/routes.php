@@ -19,7 +19,9 @@ Route::group(['middleware'=>'auth'], function()
     
     Route::get('/SystemInfo/Last5Min', 'SystemInfoController@GetLast5MinutesSystemInfo');
     
-    Route::get('/SystemInfo/Detail/{ip}', 'SystemInfoController@GetMachineDetail');
+    Route::get('/SystemInfo/Detail/{ip}','SystemInfoController@GetSystemInfoDetail');
+    
+    Route::get('/SystemInfo/Detail/{ip}/ProcessStates', 'SystemInfoController@GetProcessStatesByMachine');
 });
 
 Route::auth();

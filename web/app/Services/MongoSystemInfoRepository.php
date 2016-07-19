@@ -19,7 +19,7 @@ class MongoSystemInfoRepository implements SystemInfoRepository {
         });
     }
     
-    public function GetMachineDetail($ip) {
+    public function GetProcessStatesByMachine($ip) {
         return SystemInfo::raw(function($collection) use ($ip) {
             $endTime = intval(microtime(true));
             $startTime = $endTime - (10 * 60);
