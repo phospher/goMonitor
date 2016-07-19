@@ -7,6 +7,9 @@
 @endsection
 
 @section('javascript')
+    <script type="text/javascript" src="{{ url('lib/highcharts/standalone-framework.js') }}"></script>
+    <script type="text/javascript" src="{{ url('lib/highcharts/highcharts.js') }}"></script>
+    <script type="text/javascript" src="{{ url('lib/highcharts/highcharts-ng.min.js') }}"></script>
     <script type="text/javascript" src="{{ url('js/systemInfo.detail.js') }}"></script>
 @endsection
 
@@ -17,7 +20,7 @@
 		</div>
         <div ng-controller="ProcessStatesController">
             <input type="hidden" name="ip" ng-model="ip" ng-init="ip='{{ $ip }}'" />
-            @{{ip}}
+            <highchart id="chart1" config="chartConfig"></highchart>
         </div>
     </div>
 @endsection
