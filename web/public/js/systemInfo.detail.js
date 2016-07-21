@@ -1,16 +1,28 @@
 var app = angular.module('detail', ['ngTouch', 'highcharts-ng']);
 
 app.controller('ProcessStatesController', ['$scope', '$interval', function ($scope, $interval) {
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
     $scope.ip = '';
     $scope.chartConfig = {
+        options: {
+            chart: {
+                type: 'spline'
+            }
+        },
         title: {
-            text: 'Process States'
+            text: 'Process CPU Usage'
         },
         subtitle: {
             text: 'refresh every 10 sec.'
         },
         xAxis: {
-            categories: ['5s']
+            type: 'datetime',
+            tickPixelInterval: 150
         },
         yAxis: {
             title: {
@@ -20,19 +32,52 @@ app.controller('ProcessStatesController', ['$scope', '$interval', function ($sco
         series: [
             {
                 name: 'chrome',
-                data: [Math.random()]
+                data: (function () {
+                    var data = [];
+                    var time = (new Date()).getTime();
+                    for (var i = -19; i <= 0; i++) {
+                        data.push({
+                            x: time + i * 5000,
+                            y: 0
+                        });
+                    }
+
+                    return data;
+                } ())
             }
         ]
     };
 
-    var second = 5;
+    $scope.chartConfig.options.chart.events = {
+        load: function () {
+            var t = 0;
+            $interval(function () {
+                var series = this.series;
+                var time = (new Date()).getTime();
+                for (var i = 0; i < series.length; i++) {
+                    var x = time;
+                    var y = Math.random();
+                    series[i].addPoint([x, y], true, true);
+                }
+                if (t == 6) {
+                    this.addSeries({
+                        name: 'safari',
+                        data: (function () {
+                            var data = [];
+                            var time = (new Date()).getTime();
+                            for (var i = -19; i <= 0; i++) {
+                                data.push({
+                                    x: time + i * 5000,
+                                    y: 0
+                                });
+                            }
 
-    $interval(function () {
-        second += 5;
-        if ($scope.chartConfig.series[0].data.length >= 5) {
-            $scope.chartConfig.series[0].data.splice(0, 1);
+                            return data;
+                        } ())
+                    })
+                }
+                t++;
+            }.bind(this), 5000);
         }
-        $scope.chartConfig.xAxis.categories.push(second + 's');
-        $scope.chartConfig.series[0].data[$scope.chartConfig.series[0].data.length] = Math.random();
-    }, 5000);
+    }
 }]);
