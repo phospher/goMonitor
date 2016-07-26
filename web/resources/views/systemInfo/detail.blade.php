@@ -20,7 +20,8 @@
 		</div>
         <div ng-controller="ProcessStatesController">
             <input type="hidden" name="ip" ng-model="ip" ng-init="ip='{{ $ip }}'" />
-            <highchart id="chart1" config="chartConfig"></highchart>
+            <highchart id="cpuChart" config="cpuChartConfig"></highchart>
+            <highchart id="memoryChart" config="memoryChartConfig"></highchart>
         </div>
     </div>
 @endsection
