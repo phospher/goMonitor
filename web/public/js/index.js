@@ -1,35 +1,51 @@
 var app = angular.module('index', ['ngTouch', 'ui.grid']);
 
 app.controller('LatestController', ['$scope', '$http', '$interval', '$window', function ($scope, $http, $interval, $window) {
+	$scope.result = '';
+	
+	setGridData = function (responseData) {
+		var data = [];
 
-	getSystemInfo = function (callback) {
-		$http.get('/SystemInfo/Last5Min').then(function (response) {
+		for (var i = 0; i < responseData.length; i++) {
+			data[i] = {
+				ip: responseData[i].IPAddress,
+				cpu: (responseData[i].CPUUsage * 100).toFixed(2),
+				mem: (responseData[i].MemoryUsage * 100).toFixed(2)
+			};
+		}
+		$scope.gridOption.data = data;
+	}
 
-			var data = [];
+	if (EventSource != undefined) {
+		var es = new EventSource('/SystemInfo/Last5Min');
+		es.onmessage = function (event) {
+			setGridData(JSON.parse(event.data));
+			$scope.$apply();
+		}
+		$window.onbeforeunload = function() {
+			es.close();	
+		};
+	} else {
+		getSystemInfo = function (callback) {
+			$http.get('/SystemInfo/Last5Min').then(function (response) {
 
-			for (var i = 0; i < response.data.length; i++) {
-				data[i] = {
-					ip: response.data[i].IPAddress,
-					cpu: (response.data[i].CPUUsage * 100).toFixed(2),
-					mem: (response.data[i].MemoryUsage * 100).toFixed(2)
-				};
-			}
+				setGridData(response.data);
 
-			$scope.gridOption.data = data;
-			if (callback) {
-				callback();
-			}
+				if (callback) {
+					callback();
+				}
+			});
+		}
+
+		getSystemInfo(function () {
+			$interval(function () {
+				getSystemInfo();
+			}, 5000);
 		});
 	}
 
-	getSystemInfo(function () {
-		$interval(function () {
-			getSystemInfo();
-		}, 5000);
-	});
-	
 	$scope.toMachineDetailPage = function (ip) {
-		$window.location.href = '/machinedetail/' + decodeURIComponent(ip);
+		$window.location.href = '/SystemInfo/Detail/' + decodeURIComponent(ip);
 	};
 
 	$scope.gridOption = {

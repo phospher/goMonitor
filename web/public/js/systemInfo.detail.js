@@ -1,6 +1,6 @@
 var app = angular.module('detail', ['ngTouch', 'highcharts-ng']);
 
-app.controller('ProcessStatesController', ['$scope', '$interval', '$http', function ($scope, $interval, $http) {
+app.controller('ProcessStatesController', ['$scope', '$interval', '$http', '$window', function ($scope, $interval, $http, $window) {
     Highcharts.setOptions({
         global: {
             useUTC: false
@@ -32,7 +32,7 @@ app.controller('ProcessStatesController', ['$scope', '$interval', '$http', funct
             min: 0
         }
     };
-    
+
     $scope.memoryChartConfig = {
         options: {
             chart: {
@@ -100,14 +100,14 @@ app.controller('ProcessStatesController', ['$scope', '$interval', '$http', funct
 
     var displayLineChart = function (chartObj, data, displayField) {
         for (var i = 0; i < data.length; i++) {
-                var serie = findSerie(data[i]['_id'], chartObj.series);
-                if (serie == null) {
-                    serie = addSeriesToChart(data[i]['_id'], chartObj);
-                }
-                var x = (new Date()).getTime();
-                var y = data[i][displayField];
-                serie.addPoint([x, y], true, true)
+            var serie = findSerie(data[i]['_id'], chartObj.series);
+            if (serie == null) {
+                serie = addSeriesToChart(data[i]['_id'], chartObj);
             }
+            var x = (new Date()).getTime();
+            var y = data[i][displayField];
+            serie.addPoint([x, y], true, true)
+        }
     };
 
     var getProcessStatus = function () {
@@ -120,10 +120,24 @@ app.controller('ProcessStatesController', ['$scope', '$interval', '$http', funct
 
     $scope.cpuChartConfig.options.chart.events = {
         load: function () {
-            getProcessStatus();
-            $interval(function () {
+            if (EventSource != undefined) {
+
+                var es = new EventSource('/SystemInfo/Detail/' + $scope.ip + '/ProcessStates');
+                es.onmessage = function (event) {
+                    var data = JSON.parse(event.data);
+                    displayLineChart($scope.cpuChartConfig.getHighcharts(), data, 'CPUUsage');
+                    displayLineChart($scope.memoryChartConfig.getHighcharts(), data, 'MemoryUsage');
+                }
+                $window.onbeforeunload = function () {
+                    es.close();
+                };
+
+            } else {
                 getProcessStatus();
-            }.bind(this), 10000);
+                $interval(function () {
+                    getProcessStatus();
+                }.bind(this), 10000);
+            }
         }
     }
 }]);
