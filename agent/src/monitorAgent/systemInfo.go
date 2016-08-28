@@ -81,15 +81,16 @@ func getProcessStates(output []byte, processNames []string) []*utils.ProcessInfo
 		text := scanner.Text()
 		if regex.MatchString(text) {
 			textItems := whitespaceRegex.Split(text, -1)
-			if isTargetProcess(processNames, textItems[12]) {
-				_, ok := result[textItems[12]]
+			processName := textItems[len(textItems) - 1]
+			if isTargetProcess(processNames, processName) {
+				_, ok := result[processName]
 				if !ok {
-					result[textItems[12]] = &utils.ProcessInfo{ProcessName: textItems[12], CPUUsage: 0, MemoryUsage: 0}
+					result[processName] = &utils.ProcessInfo{ProcessName: processName, CPUUsage: 0, MemoryUsage: 0}
 				}
 				cpuUsage, _ := strconv.ParseFloat(textItems[9], 64)
 				memoryUsage, _ := strconv.ParseFloat(textItems[10], 64)
-				result[textItems[12]].CPUUsage += cpuUsage
-				result[textItems[12]].MemoryUsage += memoryUsage
+				result[processName].CPUUsage += cpuUsage
+				result[processName].MemoryUsage += memoryUsage
 			}
 		}
 	}
