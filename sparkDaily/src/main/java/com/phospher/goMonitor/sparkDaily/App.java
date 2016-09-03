@@ -1,4 +1,4 @@
-package com.phospher.sparkDaily;
+package com.phospher.goMonitor.sparkDaily;
 
 /**
  * Hello world!
