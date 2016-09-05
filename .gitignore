@@ -1,3 +1,5 @@
 agent/bin/*
 agent/pkg/*
-sparkDaily/target/*
+spark/target/*
+javac-services.0.log
+javac-services.0.log.lck

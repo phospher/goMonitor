@@ -20,9 +20,9 @@
       <version>2.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.mongodb.spark</groupId>
-      <artifactId>mongo-spark-connector_2.11</artifactId>
-      <version>1.0.0</version>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.39</version>
     </dependency>
   </dependencies>
   <build>
