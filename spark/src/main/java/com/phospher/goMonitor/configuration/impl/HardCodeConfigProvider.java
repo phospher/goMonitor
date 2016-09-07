@@ -15,4 +15,8 @@ public class HardCodeConfigProvider implements ConfigProvider {
     public String getMySQLPassword() {
         return "123456";
     }
+    
+    public String getMongoDBConnectionString() {
+        return "mongodb://localhost";
+    }
 }

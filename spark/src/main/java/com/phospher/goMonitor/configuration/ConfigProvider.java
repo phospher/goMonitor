@@ -7,4 +7,6 @@ public interface ConfigProvider {
     String getMySQLUserName();
     
     String getMySQLPassword();
+    
+    String getMongoDBConnectionString();
 }

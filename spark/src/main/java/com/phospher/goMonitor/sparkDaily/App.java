@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.inject.*;
 import com.phospher.goMonitor.inject.*;
 import com.phospher.goMonitor.data.MachineRecordRepository;
+import com.phospher.goMonitor.mapper.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -17,5 +18,6 @@ public class App {
         List<String> ipAddress = machineRecordRepository.getMachineIpAddresses();
         
         JavaRDD<String> ipRDD = context.parallelize(ipAddress);
+        ipRDD.flatMap(new GetSystemInfoByIPFunction());
     }
 }
