@@ -20,6 +20,6 @@ public class App {
         List<String> ipAddress = machineRecordRepository.getMachineIpAddresses();
         
         JavaRDD<String> ipRDD = context.parallelize(ipAddress);
-        System.out.println(ipRDD.flatMap(new GetSystemInfoByIPFunction()).count());
+        ipRDD.flatMap(new GetSystemInfoByIPFunction()).foreach((s) -> System.out.println(s));
     }
 }
