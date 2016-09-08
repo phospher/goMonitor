@@ -7,6 +7,8 @@ import com.google.inject.*;
 import com.phospher.goMonitor.inject.*;
 import com.phospher.goMonitor.data.MachineRecordRepository;
 import com.phospher.goMonitor.mapper.*;
+import org.apache.spark.api.java.function.VoidFunction;
+import com.phospher.goMonitor.entities.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -18,6 +20,6 @@ public class App {
         List<String> ipAddress = machineRecordRepository.getMachineIpAddresses();
         
         JavaRDD<String> ipRDD = context.parallelize(ipAddress);
-        ipRDD.flatMap(new GetSystemInfoByIPFunction());
+        System.out.println(ipRDD.flatMap(new GetSystemInfoByIPFunction()).count());
     }
 }

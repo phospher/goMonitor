@@ -6,7 +6,7 @@ import com.phospher.goMonitor.entities.*;
 import com.mongodb.*;
 import org.mongodb.morphia.*;
 import com.google.inject.Inject;
-import java.util.List;
+import java.util.*;
 
 public class MongoDBSystemInfoRepository implements SystemInfoRepository {
     
@@ -24,9 +24,23 @@ public class MongoDBSystemInfoRepository implements SystemInfoRepository {
         Morphia morphia = new Morphia();
         morphia.mapPackage("com.phospher.goMonitor.entities", true);
         
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long startTime = cal.getTimeInMillis();
+        
+        cal.add(Calendar.DATE, 1);
+        long endTime = cal.getTimeInMillis();
+        
         Datastore datastore = morphia.createDatastore(client, "Monitor");
-        List<SystemInfo> result = datastore.createQuery(SystemInfo.class).field("IpAddress").equal(ipAddress).asList();
-        System.out.println("systeminfo count " + ipAddress + ": " + result.size());
+        List<SystemInfo> result = datastore.createQuery(SystemInfo.class)
+            .field("IPAddress").equal(ipAddress)
+            .field("Time").greaterThanOrEq(startTime)
+            .field("Time").lessThanOrEq(endTime)
+            .asList();
         return result;
     }
 }
