@@ -9,6 +9,8 @@ import com.phospher.goMonitor.data.MachineRecordRepository;
 import com.phospher.goMonitor.mapper.*;
 import org.apache.spark.api.java.function.VoidFunction;
 import com.phospher.goMonitor.entities.*;
+import scala.Tuple2;
+import com.phospher.goMonitor.reducer.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -20,6 +22,14 @@ public class App {
         List<String> ipAddress = machineRecordRepository.getMachineIpAddresses();
         
         JavaRDD<String> ipRDD = context.parallelize(ipAddress);
-        ipRDD.flatMap(new GetSystemInfoByIPFunction()).foreach((s) -> System.out.println(s));
+        JavaPairRDD<String, SystemInfo> systemInfoRDD = ipRDD.flatMap(new GetSystemInfoByIPFunction())
+            .mapToPair(i -> new Tuple2(i.getIPAddress(), i)).cache();
+        JavaPairRDD<String, Double> maxRDD = systemInfoRDD.aggregateByKey(-1d, 
+            new MaxUsageSeqFunction(a -> a.getCPUUsage()), new MaxUsageCombFunction());
+        maxRDD.foreach(a -> System.out.printf("max result: %s %f\n", a._1, a._2));
+        AverageItem zero = new AverageItem();
+        JavaPairRDD<String, AverageItem> avgRDD = systemInfoRDD.aggregateByKey(zero, 
+            new AverageCalSeqFunction(a -> a.getCPUUsage()), new AverageCalCombFunction());
+        avgRDD.foreach(a -> System.out.printf("avg result: %s %f %d\n", a._1, a._2.getTotal(), a._2.getCount()));
     }
 }
