@@ -17,8 +17,8 @@ public class App {
         SparkConf conf = new SparkConf().setAppName("goMonitor.SparkDaily");
         JavaSparkContext context = new JavaSparkContext(conf);
         
-        InjectorManager.setInjector(Guice.createInjector(new SparkInjectModule()));
-        MachineRecordRepository machineRecordRepository = InjectorManager.getInjector().getInstance(MachineRecordRepository.class);
+        Injector injector = InjectorManager.initInjector();
+        MachineRecordRepository machineRecordRepository =injector.getInstance(MachineRecordRepository.class);
         List<String> ipAddress = machineRecordRepository.getMachineIpAddresses();
         
         JavaRDD<String> ipRDD = context.parallelize(ipAddress);

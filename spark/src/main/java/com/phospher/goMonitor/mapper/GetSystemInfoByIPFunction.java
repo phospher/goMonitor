@@ -9,7 +9,7 @@ import com.phospher.goMonitor.data.SystemInfoRepository;
 public class GetSystemInfoByIPFunction implements FlatMapFunction<String, SystemInfo> {
     
     public Iterator<SystemInfo> call(String ipAddress) throws Exception {
-        SystemInfoRepository systemInfoRepository = InjectorManager.getInjector().getInstance(SystemInfoRepository.class);
+        SystemInfoRepository systemInfoRepository = InjectorManager.initInjector().getInstance(SystemInfoRepository.class);
         return systemInfoRepository.getSystemInfoByIP(ipAddress).iterator();
     }
 }
