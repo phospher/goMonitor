@@ -24,9 +24,15 @@ public class App {
         JavaRDD<String> ipRDD = context.parallelize(ipAddress);
         JavaPairRDD<String, SystemInfo> systemInfoRDD = ipRDD.flatMap(new GetSystemInfoByIPFunction())
             .mapToPair(i -> new Tuple2(i.getIPAddress(), i)).cache();
+        
         JavaPairRDD<String, Double> maxRDD = systemInfoRDD.aggregateByKey(-1d, 
             new MaxUsageSeqFunction(a -> a.getCPUUsage()), new MaxUsageCombFunction());
         maxRDD.foreach(a -> System.out.printf("max result: %s %f\n", a._1, a._2));
+        
+        JavaPairRDD<String, Double> minRDD = systemInfoRDD.aggregateByKey(999d, 
+            new MinUsageSeqFunction(a -> a.getCPUUsage()), new MinUsageCombFunction());
+        minRDD.foreach(a -> System.out.printf("min result: %s %f\n", a._1, a._2));
+        
         AverageItem zero = new AverageItem();
         JavaPairRDD<String, AverageItem> avgRDD = systemInfoRDD.aggregateByKey(zero, 
             new AverageCalSeqFunction(a -> a.getCPUUsage()), new AverageCalCombFunction());
