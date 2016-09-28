@@ -12,8 +12,11 @@ public class MachineAnalysisResult extends MySqlEntity {
     @DatabaseField(columnName = "double_field")
     private double doubleField;
 
-    @DatabaseField(columnName = "int_field")
-    private int intField;
+    @DatabaseField(columnName = "long_field")
+    private long longField;
+
+    @DatabaseField(columnName = "result_type")
+    private String resultType;
 
     @DatabaseField(columnName = "date")
     private String date;
@@ -34,12 +37,20 @@ public class MachineAnalysisResult extends MySqlEntity {
         this.doubleField = doubleField;
     }
 
-    public int getIntField() {
-        return this.intField;
+    public long getLongField() {
+        return this.longField;
     }
 
-    public void setIntField(int intField) {
-        this.intField = intField;
+    public void setLongField(long longField) {
+        this.longField = longField;
+    }
+
+    public String getResultType() {
+        return this.resultType;
+    }
+
+    public void setResultType(String resultType) {
+        this.resultType = resultType;
     }
 
     public String getDate() {

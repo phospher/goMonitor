@@ -6,6 +6,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.google.inject.*;
 import com.phospher.goMonitor.inject.InjectorManager;
 import com.j256.ormlite.db.MysqlDatabaseType;
+import com.j256.ormlite.field.DataPersisterManager;
+import com.phospher.goMonitor.entities.DatePersister;
 
 public abstract class MySqlRepository {
 
@@ -18,6 +20,8 @@ public abstract class MySqlRepository {
         try {
         connectionSource = new JdbcPooledConnectionSource(configProvider.getMySQLConnectionString(), 
             configProvider.getMySQLUserName(), configProvider.getMySQLPassword(), new MysqlDatabaseType());
+            
+        DataPersisterManager.registerDataPersisters(DatePersister.getSingleton());
         } catch(Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }

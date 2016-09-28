@@ -17,10 +17,10 @@ public class MachineRecord extends MySqlEntity {
     @DatabaseField(columnName = "mac_address")
     private String macAddresss;
 
-    @DatabaseField(columnName = "created_at", dataType = DataType.DATE_LONG)
+    @DatabaseField(columnName = "created_at")
     private Date createdAt;
 
-    @DatabaseField(columnName = "last_updated_at", dataType = DataType.DATE_LONG)
+    @DatabaseField(columnName = "last_updated_at")
     private Date lastUpdatedAt;
 
     public long getId() {

@@ -20,4 +20,9 @@ public class MySQLMachineRecordRepository extends MySqlRepository implements Mac
         
         return ipAddresses;
     }
+
+    public void addMachineAnalysisResult(MachineAnalysisResult machineAnalysisResult) throws Exception {
+        Dao<MachineAnalysisResult, Void> dao = DaoManager.createDao(this.getConnectionSource(), MachineAnalysisResult.class);
+        dao.create(machineAnalysisResult);
+    }
 }
