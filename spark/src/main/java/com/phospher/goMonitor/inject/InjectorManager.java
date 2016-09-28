@@ -7,6 +7,9 @@ public class InjectorManager {
     private static Injector injector;
 
     public static Injector initInjector() {
-        return Guice.createInjector(new SparkInjectModule());
+        if(injector == null) {
+            injector = Guice.createInjector(new SparkInjectModule()); 
+        }
+        return injector;
     }
 }

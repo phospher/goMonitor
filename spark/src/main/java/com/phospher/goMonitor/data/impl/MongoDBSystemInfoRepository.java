@@ -38,8 +38,8 @@ public class MongoDBSystemInfoRepository implements SystemInfoRepository {
         Datastore datastore = morphia.createDatastore(client, "Monitor");
         List<SystemInfo> result = datastore.createQuery(SystemInfo.class)
             .field("IPAddress").equal(ipAddress)
-            .field("Time").greaterThanOrEq(startTime)
-            .field("Time").lessThanOrEq(endTime)
+            // .field("Time").greaterThanOrEq(startTime)
+            // .field("Time").lessThanOrEq(endTime)
             .asList();
         return result;
     }

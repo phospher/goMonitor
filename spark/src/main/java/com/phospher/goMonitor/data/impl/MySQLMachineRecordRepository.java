@@ -6,25 +6,16 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
 import com.google.inject.Inject;
+import com.phospher.goMonitor.entities.*;
+import com.j256.ormlite.dao.*;
 
-public class MySQLMachineRecordRepository implements MachineRecordRepository {
-    
-    private ConfigProvider configProvider;
-    
-    @Inject
-    public MySQLMachineRecordRepository(ConfigProvider configProvider) {
-        this.configProvider = configProvider;
-    }
-    
+public class MySQLMachineRecordRepository extends MySqlRepository implements MachineRecordRepository {
+        
     public List<String> getMachineIpAddresses() throws Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection conn = DriverManager.getConnection(this.configProvider.getMySQLConnectionString(), 
-            this.configProvider.getMySQLUserName(), this.configProvider.getMySQLPassword());
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("select ip_address from machine_record");
         ArrayList<String> ipAddresses = new ArrayList<String>();
-        while(rs.next()) {
-            ipAddresses.add(rs.getString("ip_address"));
+        
+        for(MachineRecord item : DaoManager.createDao(this.getConnectionSource(), MachineRecord.class)) {
+            ipAddresses.add(item.getIPAddress());
         }
         
         return ipAddresses;
