@@ -3,3 +3,4 @@ agent/pkg/*
 spark/target/*
 javac-services.0.log
 javac-services.0.log.lck
+docker/spark-node/spark-2.0.0-bin-hadoop2.7.tgz
