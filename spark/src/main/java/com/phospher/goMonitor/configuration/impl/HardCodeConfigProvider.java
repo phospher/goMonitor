@@ -5,7 +5,7 @@ import com.phospher.goMonitor.configuration.ConfigProvider;
 public class HardCodeConfigProvider implements ConfigProvider {
     
     public String getMySQLConnectionString() {
-        return "jdbc:mysql://localhost/Monitor";
+        return "jdbc:mysql://172.18.0.100/Monitor";
     }
     
     public String getMySQLUserName() {
@@ -17,6 +17,6 @@ public class HardCodeConfigProvider implements ConfigProvider {
     }
     
     public String getMongoDBConnectionString() {
-        return "mongodb://localhost";
+        return "mongodb://172.18.0.101";
     }
 }

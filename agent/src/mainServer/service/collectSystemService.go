@@ -10,6 +10,8 @@ func StartCollectSystemService() {
 	perr := handler.AddSystemInfoFilter(filter.MySqlMachineRecordFilter{})
 
 	perr = handler.AddSystemInfoFilter(filter.LogSystemInfoFilter{})
+
+	perr = handler.AddSystemInfoFilter(filter.SendToSparkFilter{})
 	if perr != nil {
 		log.Fatalln(perr)
 	}

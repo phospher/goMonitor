@@ -1,1 +1,1 @@
-~/spark/bin/spark-submit --class com.phospher.goMonitor.sparkDaily.App --master local ./target/spark-1.0-SNAPSHOT-jar-with-dependencies.jar > /tmp/run.log
+~/spark/bin/spark-submit --class com.phospher.goMonitor.sparkDaily.App --master spark://172.18.0.200:7077 ./target/spark-1.0-SNAPSHOT-jar-with-dependencies.jar > /tmp/run.log

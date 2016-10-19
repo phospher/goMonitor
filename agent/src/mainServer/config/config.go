@@ -11,9 +11,10 @@ const (
 	PortValueName                  = "Port"
 	SqlDBConnectionStringValueName = "SqlDBConnectionString"
 	SqlDBDirverNameValueName       = "SqlDBDriverName"
+	SparkStreamAddress             = "SparkStreamAddress"
 )
 
-func getConfigValue(valueName string)(string,error)  {
+func getConfigValue(valueName string) (string, error) {
 	cfg, err := ini.Load(utils.GetConfigFilePath())
 	if err != nil {
 		return "", err
@@ -40,4 +41,8 @@ func GetSqlDBConnectionString() (string, error) {
 
 func GetSqlDBDriverName() (string, error) {
 	return getConfigValue(SqlDBDirverNameValueName)
+}
+
+func GetSparkStreamAddress() (string, error) {
+	return getConfigValue(SparkStreamAddress)
 }
