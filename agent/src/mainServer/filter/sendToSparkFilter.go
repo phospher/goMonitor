@@ -32,29 +32,35 @@ func init() {
 }
 
 func startSendSystemInfo() {
-	conn, err := listener.Accept()
-	if err != nil {
-		log.Println(err.Error())
-		return
-	}
 	for {
-		systemInfo := <-systemInfoChan
-		jsonConetnt, err := json.Marshal(*systemInfo)
+		conn, err := listener.Accept()
 		if err != nil {
 			log.Println(err.Error())
-		} else {
-			jsonText := string(jsonConetnt) + "\n"
-			_, err = conn.Write([]byte(jsonText))
-			if err != nil {
-				log.Println(err.Error())
-				conn.Close()
-				conn, err = listener.Accept()
+			return
+		}
+		go func(connection net.Conn) {
+			log.Println("new connection")
+			for {
+				systemInfo := <-systemInfoChan
+				jsonConetnt, err := json.Marshal(*systemInfo)
 				if err != nil {
 					log.Println(err.Error())
-					return
+				} else {
+					jsonText := string(jsonConetnt) + "\n"
+					_, err = conn.Write([]byte(jsonText))
+					if err != nil {
+						log.Println(err.Error())
+						connection.Close()
+						if err != nil {
+							log.Println(err.Error())
+						}
+						return
+					} else {
+						log.Print("sended: " + jsonText)
+					}
 				}
 			}
-		}
+		}(conn)
 	}
 }
 
