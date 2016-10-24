@@ -2,9 +2,10 @@ package com.phospher.goMonitor.entities;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.*;
+import java.io.Serializable;
 
 @Entity("SystemInfo")
-public class SystemInfo {
+public class SystemInfo implements Serializable {
     
     @Id
     private ObjectId id;

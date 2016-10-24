@@ -1,8 +1,9 @@
 package com.phospher.goMonitor.entities;
 
 import org.mongodb.morphia.annotations.*;
+import java.io.Serializable;
 
-public class ProcessInfo {
+public class ProcessInfo implements Serializable {
     
     @Property("ProcessName")
     private String processName;

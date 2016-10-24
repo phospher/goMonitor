@@ -1,6 +1,7 @@
 package com.phospher.goMonitor.aggregator.impl;
 
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.streaming.api.java.JavaPairDStream;
 import com.phospher.goMonitor.entities.SystemInfo;
 import com.phospher.goMonitor.aggregator.SystemInfoAggregator;
 import java.text.SimpleDateFormat;
@@ -16,4 +17,6 @@ public abstract class YesterdayAggregator implements SystemInfoAggregator {
     }
 
     public abstract void aggregate(JavaPairRDD<String, SystemInfo> systemInfoes) throws Exception;
+
+    public abstract void aggregate(JavaPairDStream<String, SystemInfo> systemInfoes) throws Exception;
 }

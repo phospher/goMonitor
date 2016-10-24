@@ -4,6 +4,8 @@ import org.apache.spark.*;
 import org.apache.spark.streaming.api.java.*;
 import org.apache.spark.streaming.Durations;
 import com.phospher.goMonitor.mapper.*;
+import com.phospher.goMonitor.entities.*;
+import com.phospher.goMonitor.aggregator.impl.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -11,11 +13,10 @@ public class App {
         JavaStreamingContext sc = new JavaStreamingContext(conf, Durations.seconds(1));
 
         JavaReceiverInputDStream<String> inputStream = sc.socketTextStream("localhost", 9999);
-        inputStream.mapToPair(new GetSystemInfoByJsonFunction()).foreachRDD(rdd -> {
-            rdd.foreach(i -> {
-                System.out.printf("%s: %f\n", i._1, i._2.getCPUUsage());
-            });
-        });
+        JavaPairDStream<String, SystemInfo> systemInfoes = inputStream.mapToPair(new GetSystemInfoByJsonFunction()).cache();
+
+        new AvgCPUUsageAggregator().aggregate(systemInfoes); 
+
 
         sc.start();
         sc.awaitTermination();

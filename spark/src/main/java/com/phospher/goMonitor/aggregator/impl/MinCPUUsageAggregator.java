@@ -1,6 +1,7 @@
 package com.phospher.goMonitor.aggregator.impl;
 
 import org.apache.spark.api.java.*;
+import org.apache.spark.streaming.api.java.JavaPairDStream;
 import com.phospher.goMonitor.entities.SystemInfo;
 import com.phospher.goMonitor.reducer.*;
 import com.phospher.goMonitor.data.MachineRecordRepository;
@@ -27,5 +28,9 @@ public class MinCPUUsageAggregator extends YesterdayAggregator {
             respository.addMachineAnalysisResult(result);
             System.out.printf("min result: %s %f\n", i._1, i._2);
         });
+    }
+
+    @Override
+    public void aggregate(JavaPairDStream<String, SystemInfo> systemInfoes) throws Exception {
     }
 }
