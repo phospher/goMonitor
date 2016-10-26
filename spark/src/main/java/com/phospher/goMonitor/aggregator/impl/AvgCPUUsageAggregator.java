@@ -35,10 +35,20 @@ public class AvgCPUUsageAggregator extends YesterdayAggregator {
 
     @Override
     public void aggregate(JavaPairDStream<String, SystemInfo> systemInfoes) throws Exception {
-        systemInfoes.mapToPair(i -> new Tuple2<String, AverageItem>(i._1, new AverageItem(i._2.getCPUUsage(), 1)))
-            .reduceByKey((a, b) -> new AverageItem(a.getTotal() + b.getTotal(), a.getCount() + b.getCount()))
-            .foreachRDD(rdd -> rdd.foreach(i -> {
-                System.out.printf("avg result: %s %f %d\n", i._1, i._2.getTotal(), i._2.getCount());
-            }));
+        systemInfoes.updateStateByKey((values, state) -> {
+            if (values != null) {
+                long count = (state.isPresent() ? ((AverageItem)state.get()).getCount() : 0) + values.size();
+                double total = (state.isPresent() ? ((AverageItem)state.get()).getTotal() : 0);
+                for(SystemInfo item : values) {
+                    total += item.getCPUUsage();
+                }
+
+                return Optional.of(new AverageItem(total, count));
+            } else {
+                return state;
+            }
+        }).foreachRDD(rdd -> {
+            rdd.foreach(i -> System.out.printf("avg result: %s %f %d\n", i._1, ((AverageItem)i._2).getTotal(), ((AverageItem)i._2).getCount()));
+        });
     }
 }

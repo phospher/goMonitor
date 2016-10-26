@@ -1,7 +1,7 @@
 package com.phospher.goMonitor.aggregator.impl;
 
-import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.streaming.api.java.JavaPairDStream;
+import org.apache.spark.api.java.*;
+import org.apache.spark.streaming.api.java.*;
 import com.phospher.goMonitor.entities.SystemInfo;
 import com.phospher.goMonitor.reducer.*;
 import com.phospher.goMonitor.data.MachineRecordRepository;
@@ -33,5 +33,21 @@ public class MaxCPUUsageAggregator extends YesterdayAggregator {
 
     @Override
     public void aggregate(JavaPairDStream<String, SystemInfo> systemInfoes) throws Exception {
+        systemInfoes.updateStateByKey((values, state) -> {
+            if (values != null && values.size() > 0) {
+                double max = state.isPresent() ? (double)state.get() : -1d;
+                for (SystemInfo item : values) {
+                    if (item.getCPUUsage() > max) {
+                        max = item.getCPUUsage();
+                    }
+                }
+
+                return Optional.of(max);
+            } else {
+                return state;
+            }
+        }).foreachRDD(rdd -> {
+            rdd.foreach(i -> System.out.printf("max result: %s %f\n", i._1, i._2));
+        });
     }
 }

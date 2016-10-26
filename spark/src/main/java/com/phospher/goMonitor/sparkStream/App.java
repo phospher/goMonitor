@@ -8,15 +8,23 @@ import com.phospher.goMonitor.entities.*;
 import com.phospher.goMonitor.aggregator.impl.*;
 
 public class App {
+   private static final String checkpointDir = "/tmp/checkpoint/";
+
     public static void main(String[] args) throws Exception {
-        SparkConf conf = new SparkConf().setAppName("goMonitor.sparkStream");
-        JavaStreamingContext sc = new JavaStreamingContext(conf, Durations.seconds(1));
 
-        JavaReceiverInputDStream<String> inputStream = sc.socketTextStream("localhost", 9999);
-        JavaPairDStream<String, SystemInfo> systemInfoes = inputStream.mapToPair(new GetSystemInfoByJsonFunction()).cache();
+        JavaStreamingContext sc = JavaStreamingContext.getOrCreate(checkpointDir, () -> {
+            SparkConf conf = new SparkConf().setAppName("goMonitor.sparkStream");
+            JavaStreamingContext context = new JavaStreamingContext(conf, Durations.seconds(1));
+            JavaReceiverInputDStream<String> inputStream = context.socketTextStream("localhost", 9999);
+            JavaPairDStream<String, SystemInfo> systemInfoes = inputStream.mapToPair(new GetSystemInfoByJsonFunction()).window(Durations.seconds(5)).cache();
 
-        new AvgCPUUsageAggregator().aggregate(systemInfoes); 
-
+            new AvgCPUUsageAggregator().aggregate(systemInfoes); 
+            new MaxCPUUsageAggregator().aggregate(systemInfoes);
+            new MinCPUUsageAggregator().aggregate(systemInfoes);
+            
+            context.checkpoint(checkpointDir);
+            return context;
+        });
 
         sc.start();
         sc.awaitTermination();

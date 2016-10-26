@@ -32,5 +32,21 @@ public class MinCPUUsageAggregator extends YesterdayAggregator {
 
     @Override
     public void aggregate(JavaPairDStream<String, SystemInfo> systemInfoes) throws Exception {
+        systemInfoes.updateStateByKey((values, state) -> {
+            if (values != null && values.size() > 0) {
+                double min = state.isPresent() ? (double)state.get() : 9999d;
+                for (SystemInfo item : values) {
+                    if (item.getCPUUsage() < min) {
+                        min = item.getCPUUsage();
+                    }
+                }
+
+                return Optional.of(min);
+            } else {
+                return state;
+            }
+        }).foreachRDD(rdd -> {
+            rdd.foreach(i -> System.out.printf("min result: %s %f\n", i._1, i._2));
+        });
     }
 }
