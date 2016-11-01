@@ -15,7 +15,6 @@ func init() {
 	currentDir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	defaultConfigFilePath := filepath.Join(currentDir, "config.ini")
 	flag.StringVar(&configFilePath, "configFile", defaultConfigFilePath, "Configuration File Path")
-	flag.Parse()
 }
 
 func GetConfigValue(session *ini.Section, key string) (string, error) {

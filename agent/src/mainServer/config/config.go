@@ -3,6 +3,8 @@ package config
 import (
 	"utils"
 
+	"flag"
+
 	"github.com/go-ini/ini"
 )
 
@@ -13,6 +15,10 @@ const (
 	SqlDBDirverNameValueName       = "SqlDBDriverName"
 	SparkStreamAddress             = "SparkStreamAddress"
 )
+
+func init() {
+	flag.Parse()
+}
 
 func getConfigValue(valueName string) (string, error) {
 	cfg, err := ini.Load(utils.GetConfigFilePath())

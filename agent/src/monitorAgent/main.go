@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"monitorAgent/config"
 	"time"
@@ -10,6 +11,7 @@ import (
 
 func main() {
 	address, err := config.GetMainServerConfig()
+	fmt.Printf("Connected to main server: %s\n", address)
 	if err != nil {
 		log.Fatalln(err)
 		return
