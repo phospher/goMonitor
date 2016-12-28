@@ -1,10 +1,11 @@
 #include "monitorAgent.h"
 #include "utils/config.h"
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
-    test();
     init_configuration(argc, argv);
+    test();
 
     return 0;
 }

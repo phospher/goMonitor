@@ -1,9 +1,11 @@
 #include <iostream>
 #include "monitorAgent.h"
+#include "utils/config.h"
 
 using namespace std;
 
 void test()
 {
-    cout << "hello world" << "\n";
+    cout << "hello world" << endl;
+    cout << CURRENT_CONFIG_PROVIDER->get_config_value("", "PORT") << endl;
 }
