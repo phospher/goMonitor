@@ -5,3 +5,7 @@ monitorAgent: libutils.a
 
 libutils.a:
 	cd ./utils && make
+
+clean:
+	cd ./monitorAgent && make clean
+	cd ./utils && make clean
