@@ -6,6 +6,6 @@ javac-services.0.log.lck
 docker/spark-node/spark-2.0.0-bin-hadoop2.7.tgz
 docker/spark-node/spark-2.0.0-bin-hadoop2.7/*
 cppAgent/bin/*
-cppAgent/out/*
 cppAgent/lib/*.a
 cppAgent/*/build/*
+cppAgent/include/utils/*
