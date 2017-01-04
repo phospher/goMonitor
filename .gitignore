@@ -9,3 +9,4 @@ cppAgent/bin/*
 cppAgent/lib/*.a
 cppAgent/*/build/*
 cppAgent/include/utils/*
+cppAgent/build/*
