@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdint>
 #include <cstring>
+#include <cstdio>
 #include "systeminfo.h"
 
 using namespace std;
@@ -85,4 +86,17 @@ percent_t get_system_mem_usage()
     cout << total_mem << endl;
     cout << available_mem << endl;
     return 1 - ((percent_t)available_mem) / total_mem;
+}
+
+vector<int32_t> *get_pid_by_name(string &name)
+{
+    char temp[1024];
+    FILE *pp = popen(("pgrep " + name).c_str(), "r");
+    vector<int32_t> *result = new vector<int32_t>;
+    while (fgets(temp, sizeof(temp), pp) != NULL)
+    {
+        result->push_back(stoi(string(temp)));
+    }
+
+    return result;
 }
