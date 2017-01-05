@@ -11,13 +11,11 @@ int main(int argc, char *argv[])
 {
     init_configuration(argc, argv);
     test();
-    string process_name = "chrome";
-    vector<int32_t> *result = get_pid_by_name(process_name);
-    for (int32_t item : *result)
+    while (true)
     {
-        cout << item << endl;
+        cout << get_system_cpu_usage() << endl;
+        this_thread::sleep_for(chrono::seconds(1));
     }
-    delete result;
 
     return 0;
 }

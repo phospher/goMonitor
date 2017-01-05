@@ -4,12 +4,25 @@
 #include <cstdint>
 #include <cstring>
 #include <cstdio>
+#include <map>
 #include "systeminfo.h"
 
 using namespace std;
 
-int32_t LAST_CPU_WORK_TIME = -1;
-int32_t LAST_CPU_TOTAL_TIME = -1;
+class CPUTime
+{
+  public:
+    int32_t WorkTime;
+    int32_t TotalTime;
+    CPUTime(int32_t work_time, int32_t total_time)
+        : WorkTime(work_time), TotalTime(total_time)
+    {
+    }
+};
+
+CPUTime LAST_SYSTEM_CPU_TIME(-1, -1);
+
+map<string, CPUTime> LAST_PROCESS_CPU_TIME;
 
 vector<string> *split_string_by_whitspace(const string &str)
 {
@@ -26,13 +39,13 @@ vector<string> *split_string_by_whitspace(const string &str)
 string get_system_cpu_stat()
 {
     string result;
-    ifstream fs;
-    fs.open("/proc/stat");
+    ifstream fs("/proc/stat");
     getline(fs, result);
+    fs.close();
     return result;
 }
 
-percent_t get_syetem_cpu_usage()
+percent_t get_system_cpu_usage()
 {
     string cpu_result = get_system_cpu_stat();
     vector<string> *cpu_result_list = split_string_by_whitspace(cpu_result);
@@ -48,13 +61,13 @@ percent_t get_syetem_cpu_usage()
     }
     delete cpu_result_list;
 
-    if (LAST_CPU_WORK_TIME > 0 && LAST_CPU_TOTAL_TIME > 0)
+    if (LAST_SYSTEM_CPU_TIME.WorkTime > 0 && LAST_SYSTEM_CPU_TIME.TotalTime > 0)
     {
-        return ((percent_t)(work_time - LAST_CPU_WORK_TIME)) / (total_time - LAST_CPU_TOTAL_TIME);
+        return ((percent_t)(work_time - LAST_SYSTEM_CPU_TIME.WorkTime)) / (total_time - LAST_SYSTEM_CPU_TIME.TotalTime);
     }
 
-    LAST_CPU_WORK_TIME = work_time;
-    LAST_CPU_TOTAL_TIME = total_time;
+    LAST_SYSTEM_CPU_TIME.WorkTime = work_time;
+    LAST_SYSTEM_CPU_TIME.TotalTime = total_time;
 
     return -1;
 }
@@ -62,8 +75,7 @@ percent_t get_syetem_cpu_usage()
 void get_system_mem_info(int32_t *total_mem, int32_t *available_mem)
 {
     string total_result;
-    ifstream fs;
-    fs.open("/proc/meminfo");
+    ifstream fs("/proc/meminfo");
     getline(fs, total_result);
     cout << total_result << endl;
     vector<string> *total_result_list = split_string_by_whitspace(total_result);
@@ -76,6 +88,7 @@ void get_system_mem_info(int32_t *total_mem, int32_t *available_mem)
     cout << available_result << endl;
     vector<string> *available_result_list = split_string_by_whitspace(available_result);
     *available_mem = stoi((*available_result_list)[1]);
+    fs.close();
 }
 
 percent_t get_system_mem_usage()
@@ -97,6 +110,21 @@ vector<int32_t> *get_pid_by_name(string &name)
     {
         result->push_back(stoi(string(temp)));
     }
+    pclose(pp);
 
     return result;
+}
+
+vector<string> *get_process_stat(int32_t pid)
+{
+    char proc_file_name[1024];
+    sprintf(proc_file_name, "/proc/%d/stat", pid);
+    ifstream fs(proc_file_name);
+    string file_result;
+    getline(fs, file_result);
+    return split_string_by_whitspace(file_result);
+}
+
+ProcessInfo *get_process_info(string &process_name)
+{
 }
