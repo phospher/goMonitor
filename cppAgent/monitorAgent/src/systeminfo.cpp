@@ -22,7 +22,9 @@ class CPUTime
 
 CPUTime LAST_SYSTEM_CPU_TIME(-1, -1);
 
-map<string, CPUTime> LAST_PROCESS_CPU_TIME;
+map<string, CPUTime *> LAST_PROCESS_CPU_TIME;
+
+int32_t SYSTEM_WORK_TIME_DIFF = -1;
 
 vector<string> *split_string_by_whitspace(const string &str)
 {
@@ -63,6 +65,7 @@ percent_t get_system_cpu_usage()
 
     if (LAST_SYSTEM_CPU_TIME.WorkTime > 0 && LAST_SYSTEM_CPU_TIME.TotalTime > 0)
     {
+        SYSTEM_WORK_TIME_DIFF = work_time - LAST_SYSTEM_CPU_TIME.WorkTime;
         return ((percent_t)(work_time - LAST_SYSTEM_CPU_TIME.WorkTime)) / (total_time - LAST_SYSTEM_CPU_TIME.TotalTime);
     }
 
@@ -125,6 +128,53 @@ vector<string> *get_process_stat(int32_t pid)
     return split_string_by_whitspace(file_result);
 }
 
+int32_t get_process_cpu_time(string &process_name, vector<string> *process_stat)
+{
+    if (process_stat != NULL && process_stat->size() > 0)
+    {
+        int cpu_time = stoi((*process_stat)[13]) + stoi((*process_stat)[14]);
+        return cpu_time;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+percent_t cal_proces_cpu_usage(string &process_name, int32_t cpu_time)
+{
+    auto last_process_cpu_time = LAST_PROCESS_CPU_TIME.find(process_name);
+    if (last_process_cpu_time != LAST_PROCESS_CPU_TIME.end())
+    {
+        percent_t result = ((percent_t)cpu_time - last_process_cpu_time->second->WorkTime) / SYSTEM_WORK_TIME_DIFF;
+        last_process_cpu_time->second->WorkTime = cpu_time;
+        last_process_cpu_time->second->TotalTime = cpu_time;
+        return result;
+    }
+    else
+    {
+        LAST_PROCESS_CPU_TIME[process_name] = new CPUTime(cpu_time, cpu_time);
+        return -1;
+    }
+}
+
 ProcessInfo *get_process_info(string &process_name)
 {
+    ProcessInfo *result = NULL;
+    vector<int32_t> *pids = get_pid_by_name(process_name);
+    if (pids != NULL && pids->size() > 0)
+    {
+        result = new ProcessInfo;
+        result->ProcessName = process_name.c_str();
+        int32_t total_cpu_time = 0;
+        for (int32_t pid : *pids)
+        {
+            vector<string> *process_stat = get_process_stat(pid);
+            total_cpu_time += get_process_cpu_time(process_name, process_stat);
+            delete process_stat;
+        }
+        result->CPUUsage = cal_proces_cpu_usage(process_name, total_cpu_time);
+    }
+    delete pids;
+    return result;
 }
