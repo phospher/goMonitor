@@ -16,8 +16,11 @@ int main(int argc, char *argv[])
         get_system_cpu_usage();
         string process_name("chrome");
         ProcessInfo *process_info = get_process_info(process_name);
-        cout << process_info->ProcessName << endl;
-        cout << process_info->CPUUsage << endl;
+        if (process_info != NULL)
+        {
+            cout << process_info->ProcessName << endl;
+            cout << process_info->CPUUsage << endl;
+        }
         this_thread::sleep_for(chrono::seconds(1));
     }
 
