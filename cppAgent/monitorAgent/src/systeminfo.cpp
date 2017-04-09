@@ -6,6 +6,8 @@
 #include <cstdio>
 #include <map>
 #include "systeminfo.h"
+#include <log4cpp/Category.hh>
+#include <log4cpp/Priority.hh>
 
 using namespace std;
 
@@ -25,6 +27,8 @@ CPUTime LAST_SYSTEM_CPU_TIME(-1, -1);
 map<string, CPUTime *> LAST_PROCESS_CPU_TIME;
 
 int32_t SYSTEM_WORK_TIME_DIFF = -1;
+
+log4cpp::Category &logger = log4cpp::Category::getRoot();
 
 vector<string> *split_string_by_whitspace(const string &str)
 {
@@ -106,6 +110,7 @@ percent_t get_system_mem_usage()
 
 vector<int32_t> *get_pid_by_name(string &name)
 {
+    logger << log4cpp::Priority::DEBUG << "try to get pid: " << name;
     char temp[1024];
     FILE *pp = popen(("pgrep " + name).c_str(), "r");
     vector<int32_t> *result = new vector<int32_t>;
