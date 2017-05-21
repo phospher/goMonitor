@@ -16,6 +16,7 @@ public:
 class SystemInfo
 {
 public:
+  SystemInfo();
   const char *MacAddress;
   percent_t CPUUsage;
   percent_t MemoryUsage;
@@ -23,4 +24,5 @@ public:
   int Time;
   vector<ProcessInfo *> ProcessInfoes;
   const char *to_json() const;
+  ~SystemInfo();
 };

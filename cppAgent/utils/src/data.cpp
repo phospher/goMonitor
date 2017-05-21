@@ -53,3 +53,18 @@ const char* SystemInfo::to_json() const
     serialize_systemInfo(writer, this);
     return sb.GetString();
 }
+
+SystemInfo::SystemInfo(): MacAddress(""), CPUUsage(0), MemoryUsage(0), IPAddress(""), Time(0)
+{
+}
+
+SystemInfo::~SystemInfo()
+{
+    for(ProcessInfo *item : this->ProcessInfoes)
+    {
+        if(item)
+        {
+            delete item;
+        }
+    }
+}

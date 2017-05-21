@@ -183,3 +183,10 @@ ProcessInfo *get_process_info(string &process_name)
     delete pids;
     return result;
 }
+
+SystemInfo *get_system_info()
+{
+    SystemInfo *result = new SystemInfo;
+    result->IPAddress = "test";
+    return result;
+}

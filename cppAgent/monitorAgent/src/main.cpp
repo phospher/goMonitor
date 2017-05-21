@@ -62,19 +62,11 @@ int main(int argc, char *argv[])
     while (true)
     {
         get_system_cpu_usage();
-        string process_name("firefox");
-        ProcessInfo *process_info = get_process_info(process_name);
-        if (process_info != NULL)
-        {
-            SystemInfo* system_info = new SystemInfo;
-            system_info->MacAddress = "abc";
-            system_info->IPAddress = "127.0.0.1";
-            (system_info->ProcessInfoes).push_back(process_info);
-            cout << process_info->ProcessName << endl;
-            cout << process_info->CPUUsage << endl;
-            cout << system_info->to_json() << endl;
-            delete system_info;
-        }
+        SystemInfo *system_info = get_system_info();
+        cout << system_info->to_json() << endl;
+        const char *ip_address = system_info->IPAddress;
+        cout << ip_address << endl;
+        delete system_info;
         this_thread::sleep_for(chrono::seconds(1));
     }
 
