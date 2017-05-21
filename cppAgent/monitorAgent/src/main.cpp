@@ -66,8 +66,14 @@ int main(int argc, char *argv[])
         ProcessInfo *process_info = get_process_info(process_name);
         if (process_info != NULL)
         {
+            SystemInfo* system_info = new SystemInfo;
+            system_info->MacAddress = "abc";
+            system_info->IPAddress = "127.0.0.1";
+            (system_info->ProcessInfoes).push_back(process_info);
             cout << process_info->ProcessName << endl;
             cout << process_info->CPUUsage << endl;
+            cout << system_info->to_json() << endl;
+            delete system_info;
         }
         this_thread::sleep_for(chrono::seconds(1));
     }
