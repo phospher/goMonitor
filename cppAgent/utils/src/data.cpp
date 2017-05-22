@@ -1,5 +1,6 @@
 #include "data.h"
 #include "rapidjson/prettywriter.h"
+#include <cstring>
 
 using namespace rapidjson;
 
@@ -20,7 +21,10 @@ const char* ProcessInfo::to_json() const
     StringBuffer sb;
     PrettyWriter<StringBuffer> writer(sb);
     serialize_processInfo(writer, this);
-    return sb.GetString();
+    const char *json = sb.GetString();
+    char *result = new char[strlen(json)];
+    strcpy(result, json);
+    return result;
 }
 
 template <typename Writer> void serialize_systemInfo(Writer& writer, const SystemInfo* systemInfo)
@@ -51,7 +55,10 @@ const char* SystemInfo::to_json() const
     StringBuffer sb;
     PrettyWriter<StringBuffer> writer(sb);
     serialize_systemInfo(writer, this);
-    return sb.GetString();
+    const char *json = sb.GetString();
+    char *result = new char[strlen(json)];
+    strcpy(result, json);
+    return result;
 }
 
 SystemInfo::SystemInfo(): MacAddress(""), CPUUsage(0), MemoryUsage(0), IPAddress(""), Time(0)

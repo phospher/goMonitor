@@ -5,6 +5,10 @@
 #include <cstring>
 #include <cstdio>
 #include <map>
+#include <sys/types.h>
+#include <ifaddrs.h>
+#include <arpa/inet.h>
+#include <stdexcept>
 #include "systeminfo.h"
 #include <log4cpp/Category.hh>
 #include <log4cpp/Priority.hh>
@@ -23,6 +27,9 @@ class CPUTime
 };
 
 CPUTime LAST_SYSTEM_CPU_TIME(-1, -1);
+
+string *ip_address;
+char *mac_address = NULL;
 
 map<string, CPUTime *> LAST_PROCESS_CPU_TIME;
 
@@ -184,9 +191,47 @@ ProcessInfo *get_process_info(string &process_name)
     return result;
 }
 
+string *get_ip_address()
+{
+    if (ip_address == NULL)
+    {
+        logger.debug("get ip address");
+        struct ifaddrs *ifAddrStruct = NULL;
+        struct ifaddrs *ifa = NULL;
+        void *tmpAddrPtr = NULL;
+        int ret = getifaddrs(&ifAddrStruct);
+        if (ret < 0)
+        {
+            runtime_error ex(strerror(errno));
+            throw ex;
+        }
+        for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next)
+        {
+            if (!ifa->ifa_addr)
+            {
+                continue;
+            }
+            if (ifa->ifa_addr->sa_family == AF_INET)
+            {
+                tmpAddrPtr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+                char address_buffer[INET_ADDRSTRLEN];
+                inet_ntop(AF_INET, tmpAddrPtr, address_buffer, INET_ADDRSTRLEN);
+                ip_address = new string(address_buffer);
+                break;
+            }
+        }
+        if (ifAddrStruct != NULL)
+        {
+            freeifaddrs(ifAddrStruct);
+        }
+    }
+    return ip_address;
+}
+
 SystemInfo *get_system_info()
 {
     SystemInfo *result = new SystemInfo;
-    result->IPAddress = "test";
+    string *ip_address = get_ip_address();
+    result->IPAddress = ip_address->c_str();
     return result;
 }

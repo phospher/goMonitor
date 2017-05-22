@@ -63,9 +63,7 @@ int main(int argc, char *argv[])
     {
         get_system_cpu_usage();
         SystemInfo *system_info = get_system_info();
-        cout << system_info->to_json() << endl;
-        const char *ip_address = system_info->IPAddress;
-        cout << ip_address << endl;
+        logger.debug(system_info->to_json());
         delete system_info;
         this_thread::sleep_for(chrono::seconds(1));
     }
