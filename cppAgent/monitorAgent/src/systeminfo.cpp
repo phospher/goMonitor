@@ -177,7 +177,7 @@ ProcessInfo *get_process_info(string &process_name)
     if (pids != NULL && pids->size() > 0)
     {
         result = new ProcessInfo;
-        result->ProcessName = process_name.c_str();
+        result->set_process_name(process_name.c_str());
         int32_t total_cpu_time = 0;
         for (int32_t pid : *pids)
         {
@@ -232,6 +232,6 @@ SystemInfo *get_system_info()
 {
     SystemInfo *result = new SystemInfo;
     string *ip_address = get_ip_address();
-    result->IPAddress = ip_address->c_str();
+    result->set_ip_address(ip_address->c_str());
     return result;
 }
