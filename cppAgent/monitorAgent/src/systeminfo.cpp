@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <ifaddrs.h>
 #include <arpa/inet.h>
+#include <net/if.h>
+#include <sys/ioctl.h>
 #include <stdexcept>
 #include "systeminfo.h"
 #include <log4cpp/Category.hh>
@@ -28,8 +30,8 @@ class CPUTime
 
 CPUTime LAST_SYSTEM_CPU_TIME(-1, -1);
 
-string *ip_address;
-char *mac_address = NULL;
+string *ip_address = NULL;
+string *mac_address = NULL;
 
 map<string, CPUTime *> LAST_PROCESS_CPU_TIME;
 
@@ -191,6 +193,44 @@ ProcessInfo *get_process_info(string &process_name)
     return result;
 }
 
+void init_mac_address(const char *net_name)
+{
+    if (mac_address == NULL)
+    {
+        struct ifreq s;
+        int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
+        if (fd < 0)
+        {
+            runtime_error ex(strerror(errno));
+            throw ex;
+        }
+
+        stringstream stream;
+
+        strcpy(s.ifr_name, net_name);
+        if (0 == ioctl(fd, SIOCGIFHWADDR, &s))
+        {
+            int i;
+            for (i = 0; i < 6; ++i)
+            {
+                char buf[10];
+                sprintf(buf, "%02x", (unsigned char)s.ifr_addr.sa_data[i]);
+                stream << buf;
+                if (i < 5)
+                {
+                    stream << ":";
+                }
+            }
+        }
+        else
+        {
+            runtime_error ex(strerror(errno));
+            throw ex;
+        }
+        mac_address = new string(stream.str());
+    }
+}
+
 string *get_ip_address()
 {
     if (ip_address == NULL)
@@ -211,12 +251,13 @@ string *get_ip_address()
             {
                 continue;
             }
-            if (ifa->ifa_addr->sa_family == AF_INET)
+            if (ifa->ifa_addr->sa_family == AF_INET && strcmp(ifa->ifa_name, "lo") != 0)
             {
                 tmpAddrPtr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
                 char address_buffer[INET_ADDRSTRLEN];
                 inet_ntop(AF_INET, tmpAddrPtr, address_buffer, INET_ADDRSTRLEN);
                 ip_address = new string(address_buffer);
+                init_mac_address(ifa->ifa_name);
                 break;
             }
         }
@@ -228,10 +269,15 @@ string *get_ip_address()
     return ip_address;
 }
 
+string *get_mac_address()
+{
+    return mac_address;
+}
+
 SystemInfo *get_system_info()
 {
     SystemInfo *result = new SystemInfo;
-    string *ip_address = get_ip_address();
-    result->set_ip_address(ip_address->c_str());
+    result->set_ip_address(get_ip_address()->c_str());
+    result->set_mac_address(get_mac_address()->c_str());
     return result;
 }
