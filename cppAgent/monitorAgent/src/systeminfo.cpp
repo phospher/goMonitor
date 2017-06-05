@@ -14,6 +14,7 @@
 #include "systeminfo.h"
 #include <log4cpp/Category.hh>
 #include <log4cpp/Priority.hh>
+#include "utils/config.h"
 
 using namespace std;
 
@@ -274,10 +275,37 @@ string *get_mac_address()
     return mac_address;
 }
 
+void split_string(const string &str, std::vector<std::string> &result, const string &sep)
+{
+    std::string::size_type pos1, pos2;
+    pos2 = str.find(sep);
+    pos1 = 0;
+    while (std::string::npos != pos2)
+    {
+        result.push_back(str.substr(pos1, pos2 - pos1));
+
+        pos1 = pos2 + sep.size();
+        pos2 = str.find(sep, pos1);
+    }
+    if (pos1 != str.length())
+        result.push_back(str.substr(pos1));
+}
+
 SystemInfo *get_system_info()
 {
     SystemInfo *result = new SystemInfo;
     result->set_ip_address(get_ip_address()->c_str());
     result->set_mac_address(get_mac_address()->c_str());
+    string process_names_str = CURRENT_CONFIG_PROVIDER->get_config_value("System", "ConcernedProcesses");
+    vector<string> process_names;
+    split_string(process_names_str, process_names, ",");
+    for (string item : process_names)
+    {
+        ProcessInfo *process_info = get_process_info(item);
+        if (process_info != NULL)
+        {
+            (result->ProcessInfoes).push_back(process_info);
+        }
+    }
     return result;
 }
