@@ -15,6 +15,8 @@
 #include <log4cpp/Category.hh>
 #include <log4cpp/Priority.hh>
 #include "utils/config.h"
+#include <ctime>
+#include <unistd.h>
 
 using namespace std;
 
@@ -94,7 +96,6 @@ void get_system_mem_info(int32_t *total_mem, int32_t *available_mem)
     string total_result;
     ifstream fs("/proc/meminfo");
     getline(fs, total_result);
-    cout << total_result << endl;
     vector<string> *total_result_list = split_string_by_whitspace(total_result);
     *total_mem = stoi((*total_result_list)[1]);
 
@@ -102,7 +103,6 @@ void get_system_mem_info(int32_t *total_mem, int32_t *available_mem)
 
     string available_result;
     getline(fs, available_result);
-    cout << available_result << endl;
     vector<string> *available_result_list = split_string_by_whitspace(available_result);
     *available_mem = stoi((*available_result_list)[1]);
     fs.close();
@@ -113,8 +113,6 @@ percent_t get_system_mem_usage()
     int32_t total_mem = 0;
     int32_t available_mem = 0;
     get_system_mem_info(&total_mem, &available_mem);
-    cout << total_mem << endl;
-    cout << available_mem << endl;
     return 1 - ((percent_t)available_mem) / total_mem;
 }
 
@@ -173,24 +171,45 @@ percent_t cal_proces_cpu_usage(string &process_name, int32_t cpu_time)
     }
 }
 
+float get_process_mem(vector<string> *process_stat)
+{
+    if (process_stat != NULL && process_stat->size() > 0)
+    {
+        int page_usage = stoi((*process_stat)[23]);
+        long page_size = sysconf(_SC_PAGE_SIZE);
+        return (float)(page_usage * page_size) / 1000.0;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
 ProcessInfo *get_process_info(string &process_name)
 {
     ProcessInfo *result = NULL;
     vector<int32_t> *pids = get_pid_by_name(process_name);
+    int32_t total_mem = 0;
+    int32_t available_mem = 0;
+    get_system_mem_info(&total_mem, &available_mem);
     if (pids != NULL && pids->size() > 0)
     {
         result = new ProcessInfo;
         result->set_process_name(process_name.c_str());
         int32_t total_cpu_time = 0;
+        percent_t process_total_mem = 0;
         for (int32_t pid : *pids)
         {
             vector<string> *process_stat = get_process_stat(pid);
             total_cpu_time += get_process_cpu_time(process_name, process_stat);
+            process_total_mem += get_process_mem(process_stat);
             delete process_stat;
         }
         result->CPUUsage = cal_proces_cpu_usage(process_name, total_cpu_time);
+        result->MemoryUsage = process_total_mem / (total_mem - available_mem);
     }
     delete pids;
+    logger << log4cpp::Priority::DEBUG << "success get process info: " << process_name;
     return result;
 }
 
@@ -296,6 +315,9 @@ SystemInfo *get_system_info()
     SystemInfo *result = new SystemInfo;
     result->set_ip_address(get_ip_address()->c_str());
     result->set_mac_address(get_mac_address()->c_str());
+    result->CPUUsage = get_system_cpu_usage();
+    result->MemoryUsage = get_system_mem_usage();
+    result->Time = time(NULL);
     string process_names_str = CURRENT_CONFIG_PROVIDER->get_config_value("System", "ConcernedProcesses");
     vector<string> process_names;
     split_string(process_names_str, process_names, ",");
@@ -307,5 +329,6 @@ SystemInfo *get_system_info()
             (result->ProcessInfoes).push_back(process_info);
         }
     }
+    logger << log4cpp::Priority::DEBUG << "sucess get system info";
     return result;
 }

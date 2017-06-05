@@ -1,7 +1,6 @@
 #include "data.h"
 #include "rapidjson/prettywriter.h"
 #include <cstring>
-#include <cstring>
 
 using namespace rapidjson;
 
