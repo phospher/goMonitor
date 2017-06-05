@@ -51,7 +51,7 @@ void serialize_systemInfo(Writer &writer, const SystemInfo *systemInfo)
     writer.String("IPAddress");
     writer.String(systemInfo->get_ip_address());
     writer.String("Time");
-    writer.Int(systemInfo->Time);
+    writer.Int64((int64_t)systemInfo->Time);
     writer.String("ProcessInfoes");
     writer.StartArray();
     for (ProcessInfo *item : systemInfo->ProcessInfoes)

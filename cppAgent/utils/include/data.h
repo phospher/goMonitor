@@ -27,7 +27,7 @@ public:
   SystemInfo();
   percent_t CPUUsage;
   percent_t MemoryUsage;
-  time_t Time;
+  int64_t Time;
   vector<ProcessInfo *> ProcessInfoes;
   const char *get_ip_address() const;
   void set_ip_address(const char *ip_address);

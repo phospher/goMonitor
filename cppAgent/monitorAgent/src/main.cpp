@@ -61,10 +61,8 @@ int main(int argc, char *argv[])
     test();
     while (true)
     {
-        //get_system_cpu_usage();
         SystemInfo *system_info = get_system_info();
-        //logger << log4cpp::Priority::DEBUG << system_info->to_json();
-        cout << system_info->to_json() << endl;
+        logger << log4cpp::Priority::DEBUG << system_info->to_json();
         delete system_info;
         this_thread::sleep_for(chrono::seconds(1));
     }
