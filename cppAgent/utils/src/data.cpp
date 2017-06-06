@@ -1,5 +1,5 @@
 #include "data.h"
-#include "rapidjson/prettywriter.h"
+#include "rapidjson/writer.h"
 #include <cstring>
 
 using namespace rapidjson;
@@ -30,7 +30,7 @@ void ProcessInfo::set_process_name(const char *process_name)
 const char *ProcessInfo::to_json() const
 {
     StringBuffer sb;
-    PrettyWriter<StringBuffer> writer(sb);
+    Writer<StringBuffer> writer(sb);
     serialize_processInfo(writer, this);
     const char *json = sb.GetString();
     char *result = new char[strlen(json)];
@@ -65,7 +65,7 @@ void serialize_systemInfo(Writer &writer, const SystemInfo *systemInfo)
 const char *SystemInfo::to_json() const
 {
     StringBuffer sb;
-    PrettyWriter<StringBuffer> writer(sb);
+    Writer<StringBuffer> writer(sb);
     serialize_systemInfo(writer, this);
     const char *json = sb.GetString();
     char *result = new char[strlen(json)];
