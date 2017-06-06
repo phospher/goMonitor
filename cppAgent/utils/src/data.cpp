@@ -107,3 +107,39 @@ SystemInfo::~SystemInfo()
         }
     }
 }
+
+const char *Message::get_content() const
+{
+    return this->Content;
+}
+
+void Message::set_content(const char *content)
+{
+    strcpy(this->Content, content);
+}
+
+const char *Message::get_type() const
+{
+    return this->Type;
+}
+
+void Message::set_type(const char *type)
+{
+    strcpy(this->Type, type);
+}
+
+const char *Message::to_json() const
+{
+    StringBuffer sb;
+    Writer<StringBuffer> writer(sb);
+    writer.StartObject();
+    writer.String("Type");
+    writer.String(this->Type);
+    writer.String("Content");
+    writer.String(this->Content);
+    writer.EndObject();
+    const char *json = sb.GetString();
+    char *result = new char[strlen(json)];
+    strcpy(result, json);
+    return result;
+}

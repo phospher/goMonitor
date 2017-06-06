@@ -62,7 +62,11 @@ int main(int argc, char *argv[])
     while (true)
     {
         SystemInfo *system_info = get_system_info();
-        logger << log4cpp::Priority::DEBUG << system_info->to_json();
+        const char *system_info_json = system_info->to_json();
+        Message message;
+        message.set_type("INFO");
+        message.set_content(system_info_json);
+        logger << log4cpp::Priority::DEBUG << message.to_json();
         delete system_info;
         this_thread::sleep_for(chrono::seconds(1));
     }

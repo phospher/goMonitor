@@ -5,6 +5,8 @@ using namespace std;
 
 #define MAC_ADDRESS_LEN 18
 #define PROCESS_NAME_LEN 1024
+#define MESSAGE_CONTENT_LEN 4096
+#define MESSAGE_TYPE_LEN 10
 
 typedef float percent_t;
 
@@ -39,4 +41,18 @@ public:
 private:
   char IPAddress[INET_ADDRSTRLEN];
   char MacAddress[MAC_ADDRESS_LEN];
+};
+
+class Message
+{
+public:
+  const char *get_content() const;
+  void set_content(const char *content);
+  const char *get_type() const;
+  void set_type(const char *type);
+  const char *to_json() const;
+
+private:
+  char Content[MESSAGE_CONTENT_LEN];
+  char Type[MESSAGE_TYPE_LEN];
 };
