@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     logger.debug("system start");
 
     init_configuration(argc, argv);
-    test();
+    send_message("abc");
     while (true)
     {
         SystemInfo *system_info = get_system_info();
