@@ -27,15 +27,21 @@ void ProcessInfo::set_process_name(const char *process_name)
     strcpy(this->ProcessName, process_name);
 }
 
-const char *ProcessInfo::to_json() const
+string ProcessInfo::to_json() const
 {
     StringBuffer sb;
     Writer<StringBuffer> writer(sb);
     serialize_processInfo(writer, this);
     const char *json = sb.GetString();
-    char *result = new char[strlen(json)];
-    strcpy(result, json);
-    return result;
+    return string(json);
+}
+
+ProcessInfo::ProcessInfo()
+{
+}
+
+ProcessInfo::~ProcessInfo()
+{
 }
 
 template <typename Writer>
@@ -62,15 +68,13 @@ void serialize_systemInfo(Writer &writer, const SystemInfo *systemInfo)
     writer.EndObject();
 }
 
-const char *SystemInfo::to_json() const
+string SystemInfo::to_json() const
 {
     StringBuffer sb;
     Writer<StringBuffer> writer(sb);
     serialize_systemInfo(writer, this);
     const char *json = sb.GetString();
-    char *result = new char[strlen(json)];
-    strcpy(result, json);
-    return result;
+    return string(json);
 }
 
 SystemInfo::SystemInfo() : CPUUsage(0), MemoryUsage(0), Time(0)
@@ -128,7 +132,7 @@ void Message::set_type(const char *type)
     strcpy(this->Type, type);
 }
 
-const char *Message::to_json() const
+string Message::to_json() const
 {
     StringBuffer sb;
     Writer<StringBuffer> writer(sb);
@@ -139,7 +143,13 @@ const char *Message::to_json() const
     writer.String(this->Content);
     writer.EndObject();
     const char *json = sb.GetString();
-    char *result = new char[strlen(json)];
-    strcpy(result, json);
-    return result;
+    return string(json);
+}
+
+Message::Message()
+{
+}
+
+Message::~Message()
+{
 }

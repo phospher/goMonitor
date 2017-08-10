@@ -1,5 +1,6 @@
 #include <vector>
 #include <arpa/inet.h>
+#include <string>
 
 using namespace std;
 
@@ -15,9 +16,11 @@ class ProcessInfo
 public:
   percent_t CPUUsage;
   percent_t MemoryUsage;
+  ProcessInfo();
+  ~ProcessInfo();
   const char *get_process_name() const;
   void set_process_name(const char *process_name);
-  const char *to_json() const;
+  string to_json() const;
 
 private:
   char ProcessName[PROCESS_NAME_LEN];
@@ -35,7 +38,7 @@ public:
   void set_ip_address(const char *ip_address);
   const char *get_mac_address() const;
   void set_mac_address(const char *mac_address);
-  const char *to_json() const;
+  string to_json() const;
   ~SystemInfo();
 
 private:
@@ -50,7 +53,9 @@ public:
   void set_content(const char *content);
   const char *get_type() const;
   void set_type(const char *type);
-  const char *to_json() const;
+  string to_json() const;
+  Message();
+  ~Message();
 
 private:
   char Content[MESSAGE_CONTENT_LEN];

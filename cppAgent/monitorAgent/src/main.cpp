@@ -8,6 +8,7 @@
 #include <log4cpp/Category.hh>
 #include <algorithm>
 #include <unistd.h>
+#include <string>
 
 using namespace std;
 using namespace log4cpp;
@@ -58,15 +59,15 @@ int main(int argc, char *argv[])
     logger.debug("system start");
 
     init_configuration(argc, argv);
-    send_message("abc");
     while (true)
     {
         SystemInfo *system_info = get_system_info();
-        const char *system_info_json = system_info->to_json();
+        string system_info_json = system_info->to_json();
         Message message;
         message.set_type("INFO");
-        message.set_content(system_info_json);
+        message.set_content(system_info_json.c_str());
         logger << log4cpp::Priority::DEBUG << message.to_json();
+        //send_message(message.to_json().c_str());
         delete system_info;
         this_thread::sleep_for(chrono::seconds(1));
     }

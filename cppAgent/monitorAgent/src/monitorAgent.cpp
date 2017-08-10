@@ -4,8 +4,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <strings.h>
+#include <unistd.h>
 #include <string>
-#include <string.h>
+#include <cstring>
 #include <log4cpp/PropertyConfigurator.hh>
 #include <log4cpp/Category.hh>
 
@@ -43,4 +44,13 @@ int init_socket()
 void send_message(const char *message)
 {
     int sockFd = init_socket();
+    if (write(sockFd, message, strlen(message)) < 0)
+    {
+        throw runtime_error(strerror(errno));
+    }
+
+    if (close(sockFd) < 0)
+    {
+        throw runtime_error(strerror(errno));
+    }
 }
