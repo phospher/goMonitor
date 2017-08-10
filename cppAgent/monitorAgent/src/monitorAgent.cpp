@@ -30,7 +30,6 @@ int init_socket()
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = inet_addr(ip.c_str());
     addr.sin_port = htons(port);
-    LOGGER << Priority::DEBUG << "success connect to server: " << ip << ":" << port;
     if (connect(fd, (sockaddr *)(&addr), sizeof(sockaddr)) < 0)
     {
         throw runtime_error(strerror(errno));

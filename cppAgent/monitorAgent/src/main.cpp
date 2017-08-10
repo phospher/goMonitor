@@ -66,8 +66,9 @@ int main(int argc, char *argv[])
         Message message;
         message.set_type("INFO");
         message.set_content(system_info_json.c_str());
-        logger << log4cpp::Priority::DEBUG << message.to_json();
-        //send_message(message.to_json().c_str());
+        string message_json = message.to_json();
+        logger << log4cpp::Priority::DEBUG << message_json;
+        send_message(message_json.c_str());
         delete system_info;
         this_thread::sleep_for(chrono::seconds(1));
     }
