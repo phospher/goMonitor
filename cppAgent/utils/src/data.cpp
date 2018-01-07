@@ -3,6 +3,7 @@
 #include <cstring>
 
 using namespace rapidjson;
+using namespace std;
 
 template <typename Writer>
 void serialize_processInfo(Writer &writer, const ProcessInfo *processInfo)

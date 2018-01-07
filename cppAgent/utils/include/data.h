@@ -2,8 +2,6 @@
 #include <arpa/inet.h>
 #include <string>
 
-using namespace std;
-
 #define MAC_ADDRESS_LEN 18
 #define PROCESS_NAME_LEN 1024
 #define MESSAGE_CONTENT_LEN 4096
@@ -20,7 +18,7 @@ public:
   ~ProcessInfo();
   const char *get_process_name() const;
   void set_process_name(const char *process_name);
-  string to_json() const;
+  std::string to_json() const;
 
 private:
   char ProcessName[PROCESS_NAME_LEN];
@@ -33,12 +31,12 @@ public:
   percent_t CPUUsage;
   percent_t MemoryUsage;
   time_t Time;
-  vector<ProcessInfo *> ProcessInfoes;
+  std::vector<ProcessInfo *> ProcessInfoes;
   const char *get_ip_address() const;
   void set_ip_address(const char *ip_address);
   const char *get_mac_address() const;
   void set_mac_address(const char *mac_address);
-  string to_json() const;
+  std::string to_json() const;
   ~SystemInfo();
 
 private:
@@ -53,7 +51,7 @@ public:
   void set_content(const char *content);
   const char *get_type() const;
   void set_type(const char *type);
-  string to_json() const;
+  std::string to_json() const;
   Message();
   ~Message();
 
