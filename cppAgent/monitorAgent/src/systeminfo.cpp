@@ -17,6 +17,7 @@
 #include "utils/config.h"
 #include <ctime>
 #include <unistd.h>
+#include <memory>
 
 using namespace std;
 
@@ -195,7 +196,7 @@ ProcessInfo *get_process_info(string &process_name)
     if (pids != NULL && pids->size() > 0)
     {
         result = new ProcessInfo;
-        result->set_process_name(process_name.c_str());
+        result->set_process_name(process_name);
         int32_t total_cpu_time = 0;
         percent_t process_total_mem = 0;
         for (int32_t pid : *pids)
@@ -205,8 +206,8 @@ ProcessInfo *get_process_info(string &process_name)
             process_total_mem += get_process_mem(process_stat);
             delete process_stat;
         }
-        result->CPUUsage = cal_proces_cpu_usage(process_name, total_cpu_time);
-        result->MemoryUsage = process_total_mem / (total_mem - available_mem);
+        result->set_cpu_usage(cal_proces_cpu_usage(process_name, total_cpu_time));
+        result->set_memory_usage(process_total_mem / (total_mem - available_mem));
     }
     delete pids;
     logger << log4cpp::Priority::DEBUG << "success get process info: " << process_name;
@@ -310,14 +311,14 @@ void split_string(const string &str, std::vector<std::string> &result, const str
         result.push_back(str.substr(pos1));
 }
 
-SystemInfo *get_system_info()
+shared_ptr<SystemInfo> get_system_info()
 {
     SystemInfo *result = new SystemInfo;
-    result->set_ip_address(get_ip_address()->c_str());
-    result->set_mac_address(get_mac_address()->c_str());
-    result->CPUUsage = get_system_cpu_usage();
-    result->MemoryUsage = get_system_mem_usage();
-    result->Time = time(NULL);
+    result->set_ip_address(*get_ip_address());
+    result->set_mac_address(*get_mac_address());
+    result->set_cpu_usage(get_system_cpu_usage());
+    result->set_memory_usage(get_system_mem_usage());
+    result->set_time(time(NULL));
     string process_names_str = CURRENT_CONFIG_PROVIDER->get_config_value("System", "ConcernedProcesses");
     vector<string> process_names;
     split_string(process_names_str, process_names, ",");
@@ -326,9 +327,9 @@ SystemInfo *get_system_info()
         ProcessInfo *process_info = get_process_info(item);
         if (process_info != NULL)
         {
-            (result->ProcessInfoes).push_back(process_info);
+            result->get_process_infoes().push_back(process_info);
         }
     }
     logger << log4cpp::Priority::DEBUG << "sucess get system info";
-    return result;
+    return shared_ptr<SystemInfo>(result);
 }

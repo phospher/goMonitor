@@ -10,22 +10,42 @@ void serialize_processInfo(Writer &writer, const ProcessInfo *processInfo)
 {
     writer.StartObject();
     writer.String("ProcessName");
-    writer.String(processInfo->get_process_name());
+    writer.String(processInfo->get_process_name().c_str());
     writer.String("CPUUsage");
-    writer.Double(processInfo->CPUUsage);
+    writer.Double(processInfo->get_cpu_usage());
     writer.String("MemoryUsage");
-    writer.Double(processInfo->MemoryUsage);
+    writer.Double(processInfo->get_memory_usage());
     writer.EndObject();
 }
 
-const char *ProcessInfo::get_process_name() const
+const string &ProcessInfo::get_process_name() const
 {
     return this->ProcessName;
 }
 
-void ProcessInfo::set_process_name(const char *process_name)
+void ProcessInfo::set_process_name(string &process_name)
 {
-    strcpy(this->ProcessName, process_name);
+    this->ProcessName = process_name;
+}
+
+percent_t ProcessInfo::get_cpu_usage() const
+{
+    return this->CPUUsage;
+}
+
+void ProcessInfo::set_cpu_usage(percent_t cpu_usage)
+{
+    this->CPUUsage = cpu_usage;
+}
+
+percent_t ProcessInfo::get_memory_usage() const
+{
+    return this->MemoryUsage;
+}
+
+void ProcessInfo::set_memory_usage(percent_t memory_usage)
+{
+    this->MemoryUsage = memory_usage;
 }
 
 string ProcessInfo::to_json() const
@@ -50,18 +70,18 @@ void serialize_systemInfo(Writer &writer, const SystemInfo *systemInfo)
 {
     writer.StartObject();
     writer.String("MacAddress");
-    writer.String(systemInfo->get_mac_address());
+    writer.String(systemInfo->get_mac_address().c_str());
     writer.String("CPUUsage");
-    writer.Double(systemInfo->CPUUsage);
+    writer.Double(systemInfo->get_cpu_usage());
     writer.String("MemoryUsage");
-    writer.Double(systemInfo->MemoryUsage);
+    writer.Double(systemInfo->get_memory_usage());
     writer.String("IPAddress");
-    writer.String(systemInfo->get_ip_address());
+    writer.String(systemInfo->get_ip_address().c_str());
     writer.String("Time");
-    writer.Int64((int64_t)systemInfo->Time);
+    writer.Int64((int64_t)systemInfo->get_time());
     writer.String("ProcessInfoes");
     writer.StartArray();
-    for (ProcessInfo *item : systemInfo->ProcessInfoes)
+    for (ProcessInfo *item : systemInfo->get_process_infoes())
     {
         serialize_processInfo(writer, item);
     }
@@ -82,24 +102,64 @@ SystemInfo::SystemInfo() : CPUUsage(0), MemoryUsage(0), Time(0)
 {
 }
 
-const char *SystemInfo::get_ip_address() const
+const string &SystemInfo::get_ip_address() const
 {
     return this->IPAddress;
 }
 
-void SystemInfo::set_ip_address(const char *ip_address)
+void SystemInfo::set_ip_address(string &ip_address)
 {
-    strcpy(this->IPAddress, ip_address);
+    this->IPAddress = ip_address;
 }
 
-const char *SystemInfo::get_mac_address() const
+const string &SystemInfo::get_mac_address() const
 {
     return this->MacAddress;
 }
 
-void SystemInfo::set_mac_address(const char *mac_address)
+void SystemInfo::set_mac_address(string &mac_address)
 {
-    strcpy(this->MacAddress, mac_address);
+    this->MacAddress = mac_address;
+}
+
+percent_t SystemInfo::get_cpu_usage() const
+{
+    return this->CPUUsage;
+}
+
+void SystemInfo::set_cpu_usage(percent_t cpu_usage)
+{
+    this->CPUUsage = cpu_usage;
+}
+
+percent_t SystemInfo::get_memory_usage() const
+{
+    return this->MemoryUsage;
+}
+
+void SystemInfo::set_memory_usage(percent_t memory_usage)
+{
+    this->MemoryUsage = memory_usage;
+}
+
+time_t SystemInfo::get_time() const
+{
+    return this->Time;
+}
+
+void SystemInfo::set_time(time_t time)
+{
+    this->Time = time;
+}
+
+vector<ProcessInfo *> &SystemInfo::get_process_infoes()
+{
+    return this->ProcessInfoes;
+}
+
+const vector<ProcessInfo *> &SystemInfo::get_process_infoes() const
+{
+    return this->ProcessInfoes;
 }
 
 SystemInfo::~SystemInfo()

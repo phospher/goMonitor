@@ -12,36 +12,48 @@ typedef float percent_t;
 class ProcessInfo
 {
 public:
-  percent_t CPUUsage;
-  percent_t MemoryUsage;
   ProcessInfo();
   ~ProcessInfo();
-  const char *get_process_name() const;
-  void set_process_name(const char *process_name);
+  const std::string &get_process_name() const;
+  void set_process_name(std::string &process_name);
+  percent_t get_cpu_usage() const;
+  void set_cpu_usage(percent_t cpu_usage);
+  percent_t get_memory_usage() const;
+  void set_memory_usage(percent_t memory_usage);
   std::string to_json() const;
 
 private:
-  char ProcessName[PROCESS_NAME_LEN];
+  std::string ProcessName;
+  percent_t CPUUsage;
+  percent_t MemoryUsage;
 };
 
 class SystemInfo
 {
 public:
   SystemInfo();
-  percent_t CPUUsage;
-  percent_t MemoryUsage;
-  time_t Time;
-  std::vector<ProcessInfo *> ProcessInfoes;
-  const char *get_ip_address() const;
-  void set_ip_address(const char *ip_address);
-  const char *get_mac_address() const;
-  void set_mac_address(const char *mac_address);
+  const std::string &get_ip_address() const;
+  void set_ip_address(std::string &ip_address);
+  const std::string &get_mac_address() const;
+  void set_mac_address(std::string &mac_address);
+  percent_t get_cpu_usage() const;
+  void set_cpu_usage(percent_t cpu_usage);
+  percent_t get_memory_usage() const;
+  void set_memory_usage(percent_t memory_usage);
+  time_t get_time() const;
+  void set_time(time_t time);
+  std::vector<ProcessInfo *> &get_process_infoes();
+  const std::vector<ProcessInfo *> &get_process_infoes() const;
   std::string to_json() const;
   ~SystemInfo();
 
 private:
-  char IPAddress[INET_ADDRSTRLEN];
-  char MacAddress[MAC_ADDRESS_LEN];
+  std::string IPAddress;
+  std::string MacAddress;
+  percent_t CPUUsage;
+  percent_t MemoryUsage;
+  time_t Time;
+  std::vector<ProcessInfo *> ProcessInfoes;
 };
 
 class Message
