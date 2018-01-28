@@ -2,6 +2,9 @@
 #include <arpa/inet.h>
 #include <string>
 
+#ifndef __UTILS_DATA_h__
+#define __UTILS_DATA_h__
+
 #define MAC_ADDRESS_LEN 18
 #define PROCESS_NAME_LEN 1024
 #define MESSAGE_CONTENT_LEN 4096
@@ -71,3 +74,5 @@ private:
   char Content[MESSAGE_CONTENT_LEN];
   char Type[MESSAGE_TYPE_LEN];
 };
+
+#endif
