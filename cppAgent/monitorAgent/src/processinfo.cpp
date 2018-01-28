@@ -12,10 +12,16 @@ using namespace std;
 
 log4cpp::Category &ProcessInfoProvider::LOGGER = log4cpp::Category::getRoot();
 
-CPUTime *ProcessInfoProvider::LAST_CPU_TIME = NULL;
-
 ProcessInfoProvider::ProcessInfoProvider(const string &process_name, int32_t total_mem, int32_t available_mem)
     : ProcessName(process_name), TotalMem(total_mem), AvailableMem(available_mem) {}
+
+ProcessInfoProvider::~ProcessInfoProvider()
+{
+    if (this->LastCPUTime != NULL)
+    {
+        delete this->LastCPUTime;
+    }
+}
 
 shared_ptr<ProcessInfo> ProcessInfoProvider::get_process_info()
 {
@@ -94,16 +100,16 @@ float ProcessInfoProvider::get_process_mem(vector<string> &process_stat)
 
 percent_t ProcessInfoProvider::cal_proces_cpu_usage(int32_t cpu_time)
 {
-    if (ProcessInfoProvider::LAST_CPU_TIME != NULL)
+    if (this->LastCPUTime != NULL)
     {
-        percent_t result = ((percent_t)cpu_time - ProcessInfoProvider::LAST_CPU_TIME->get_work_time()) / SYSTEM_WORK_TIME_DIFF;
-        ProcessInfoProvider::LAST_CPU_TIME->set_work_time(cpu_time);
-        ProcessInfoProvider::LAST_CPU_TIME->set_total_time(cpu_time);
+        percent_t result = ((percent_t)cpu_time - this->LastCPUTime->get_work_time()) / SYSTEM_WORK_TIME_DIFF;
+        this->LastCPUTime->set_work_time(cpu_time);
+        this->LastCPUTime->set_total_time(cpu_time);
         return result;
     }
     else
     {
-        ProcessInfoProvider::LAST_CPU_TIME = new CPUTime(cpu_time, cpu_time);
+        this->LastCPUTime = new CPUTime(cpu_time, cpu_time);
         return -1;
     }
 }
