@@ -23,7 +23,7 @@ const string &ProcessInfo::get_process_name() const
     return this->ProcessName;
 }
 
-void ProcessInfo::set_process_name(string &process_name)
+void ProcessInfo::set_process_name(const string &process_name)
 {
     this->ProcessName = process_name;
 }

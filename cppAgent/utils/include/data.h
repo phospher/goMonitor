@@ -15,7 +15,7 @@ public:
   ProcessInfo();
   ~ProcessInfo();
   const std::string &get_process_name() const;
-  void set_process_name(std::string &process_name);
+  void set_process_name(const std::string &process_name);
   percent_t get_cpu_usage() const;
   void set_cpu_usage(percent_t cpu_usage);
   percent_t get_memory_usage() const;
