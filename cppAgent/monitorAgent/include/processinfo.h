@@ -5,11 +5,14 @@
 #include <log4cpp/Category.hh>
 #include <vector>
 
+#ifndef __MONITORAGENT_PROCESSINFO_h__
+#define __MONITORAGENT_PROCESSINFO_h__
+
 class ProcessInfoProvider
 {
   public:
     ProcessInfoProvider(const std::string &process_name, const int32_t total_mem, const int32_t available_mem);
-    std::shared_ptr<ProcessInfo> get_process_info();
+    ProcessInfo *get_process_info();
     ~ProcessInfoProvider();
 
   private:
@@ -25,3 +28,5 @@ class ProcessInfoProvider
     float get_process_mem(std::vector<std::string> &process_stat);
     percent_t cal_proces_cpu_usage(int32_t cpu_time);
 };
+
+#endif

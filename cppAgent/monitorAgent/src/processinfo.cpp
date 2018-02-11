@@ -23,7 +23,7 @@ ProcessInfoProvider::~ProcessInfoProvider()
     }
 }
 
-shared_ptr<ProcessInfo> ProcessInfoProvider::get_process_info()
+ProcessInfo *ProcessInfoProvider::get_process_info()
 {
     ProcessInfo *result = NULL;
     shared_ptr<vector<int32_t>> pids = this->get_pid_by_name();
@@ -43,7 +43,7 @@ shared_ptr<ProcessInfo> ProcessInfoProvider::get_process_info()
         result->set_memory_usage(process_total_mem / (this->TotalMem - this->AvailableMem));
     }
     ProcessInfoProvider::LOGGER << log4cpp::Priority::DEBUG << "success get process info: " << this->ProcessName;
-    return shared_ptr<ProcessInfo>(result);
+    return result;
 }
 
 shared_ptr<vector<int32_t>> ProcessInfoProvider::get_pid_by_name()
