@@ -107,7 +107,7 @@ const string &SystemInfo::get_ip_address() const
     return this->IPAddress;
 }
 
-void SystemInfo::set_ip_address(string &ip_address)
+void SystemInfo::set_ip_address(const string &ip_address)
 {
     this->IPAddress = ip_address;
 }
@@ -117,7 +117,7 @@ const string &SystemInfo::get_mac_address() const
     return this->MacAddress;
 }
 
-void SystemInfo::set_mac_address(string &mac_address)
+void SystemInfo::set_mac_address(const string &mac_address)
 {
     this->MacAddress = mac_address;
 }

@@ -108,81 +108,13 @@ percent_t get_system_mem_usage()
     return 1 - ((percent_t)available_mem) / total_mem;
 }
 
-// vector<int32_t> *get_pid_by_name(string &name)
-// {
-//     logger << log4cpp::Priority::DEBUG << "try to get pid: " << name;
-//     char temp[1024];
-//     FILE *pp = popen(("pgrep " + name).c_str(), "r");
-//     vector<int32_t> *result = new vector<int32_t>;
-//     while (fgets(temp, sizeof(temp), pp) != NULL)
-//     {
-//         result->push_back(stoi(string(temp)));
-//     }
-//     pclose(pp);
-
-//     return result;
-// }
-
-// vector<string> *get_process_stat(int32_t pid)
-// {
-//     char proc_file_name[1024];
-//     sprintf(proc_file_name, "/proc/%d/stat", pid);
-//     ifstream fs(proc_file_name);
-//     string file_result;
-//     getline(fs, file_result);
-//     return split_string_by_whitspace(file_result);
-// }
-
-// int32_t get_process_cpu_time(string &process_name, vector<string> *process_stat)
-// {
-//     if (process_stat != NULL && process_stat->size() > 0)
-//     {
-//         int cpu_time = stoi((*process_stat)[13]) + stoi((*process_stat)[14]);
-//         return cpu_time;
-//     }
-//     else
-//     {
-//         return -1;
-//     }
-// }
-
-// percent_t cal_proces_cpu_usage(string &process_name, int32_t cpu_time)
-// {
-//     auto last_process_cpu_time = LAST_PROCESS_CPU_TIME.find(process_name);
-//     if (last_process_cpu_time != LAST_PROCESS_CPU_TIME.end())
-//     {
-//         percent_t result = ((percent_t)cpu_time - last_process_cpu_time->second->WorkTime) / SYSTEM_WORK_TIME_DIFF;
-//         last_process_cpu_time->second->WorkTime = cpu_time;
-//         last_process_cpu_time->second->TotalTime = cpu_time;
-//         return result;
-//     }
-//     else
-//     {
-//         LAST_PROCESS_CPU_TIME[process_name] = new CPUTime(cpu_time, cpu_time);
-//         return -1;
-//     }
-// }
-
-// float get_process_mem(vector<string> *process_stat)
-// {
-//     if (process_stat != NULL && process_stat->size() > 0)
-//     {
-//         int page_usage = stoi((*process_stat)[23]);
-//         long page_size = sysconf(_SC_PAGE_SIZE);
-//         return (float)(page_usage * page_size) / 1000.0;
-//     }
-//     else
-//     {
-//         return -1;
-//     }
-// }
-
 ProcessInfo *get_process_info(string &process_name)
 {
-    int32_t total_mem = 0;
-    int32_t available_mem = 0;
-    get_system_mem_info(&total_mem, &available_mem);
-    return ProcessInfoProvider(process_name, total_mem, available_mem).get_process_info();
+    // int32_t total_mem = 0;
+    // int32_t available_mem = 0;
+    // get_system_mem_info(&total_mem, &available_mem);
+    // return ProcessInfoProvider(process_name, total_mem, available_mem, SYSTEM_WORK_TIME_DIFF).get_process_info();
+    return NULL;
 }
 
 void init_mac_address(const char *net_name)

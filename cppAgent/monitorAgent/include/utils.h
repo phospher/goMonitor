@@ -5,8 +5,6 @@
 #ifndef __MONITORAGENT_UTILS_h__
 #define __MONITORAGENT_UTILS_h__
 
-extern int32_t SYSTEM_WORK_TIME_DIFF;
-
 class CPUTime
 {
   public:
@@ -22,5 +20,7 @@ class CPUTime
 };
 
 std::shared_ptr<std::vector<std::string>> split_string_by_whitspace2(const std::string &str);
+
+void split_string2(const std::string &str, std::vector<std::string> &result, const std::string &sep);
 
 #endif

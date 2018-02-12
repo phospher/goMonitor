@@ -36,9 +36,9 @@ class SystemInfo
 public:
   SystemInfo();
   const std::string &get_ip_address() const;
-  void set_ip_address(std::string &ip_address);
+  void set_ip_address(const std::string &ip_address);
   const std::string &get_mac_address() const;
-  void set_mac_address(std::string &mac_address);
+  void set_mac_address(const std::string &mac_address);
   percent_t get_cpu_usage() const;
   void set_cpu_usage(percent_t cpu_usage);
   percent_t get_memory_usage() const;

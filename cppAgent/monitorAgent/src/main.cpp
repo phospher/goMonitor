@@ -1,6 +1,6 @@
 #include "monitorAgent.h"
 #include "utils/config.h"
-#include "systeminfo.h"
+#include "systeminfo2.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -59,16 +59,19 @@ int main(int argc, char *argv[])
     logger.debug("system start");
 
     init_configuration(argc, argv);
+
+    SystemInfoProvider system_info_provider;
     while (true)
     {
-        shared_ptr<SystemInfo> system_info = get_system_info();
+
+        shared_ptr<SystemInfo> system_info = system_info_provider.get_system_info();
         string system_info_json = system_info->to_json();
         Message message;
         message.set_type("INFO");
         message.set_content(system_info_json.c_str());
         string message_json = message.to_json();
         logger << log4cpp::Priority::DEBUG << message_json;
-        //send_message(message_json.c_str());
+        // send_message(message_json.c_str());
         this_thread::sleep_for(chrono::seconds(1));
     }
 

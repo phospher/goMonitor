@@ -42,3 +42,19 @@ shared_ptr<vector<string>> split_string_by_whitspace2(const string &str)
     }
     return shared_ptr<vector<string>>(result);
 }
+
+void split_string2(const string &str, std::vector<std::string> &result, const string &sep)
+{
+    std::string::size_type pos1, pos2;
+    pos2 = str.find(sep);
+    pos1 = 0;
+    while (std::string::npos != pos2)
+    {
+        result.push_back(str.substr(pos1, pos2 - pos1));
+
+        pos1 = pos2 + sep.size();
+        pos2 = str.find(sep, pos1);
+    }
+    if (pos1 != str.length())
+        result.push_back(str.substr(pos1));
+}
