@@ -46,8 +46,10 @@ shared_ptr<SystemInfo> SystemInfoProvider::get_system_info()
     this->get_system_mem_info(&total_mem, &available_mem);
     for (int i = 0; i < this->ProcessInfoProviders.size(); i++)
     {
-        this->CurrentSystemInfo->get_process_infoes()[i] =
-            this->ProcessInfoProviders[i]->get_process_info(total_mem, available_mem, this->SystemWorkTimeDiff);
+        ProcessInfo *process_info = this->ProcessInfoProviders[i]->get_process_info(total_mem,
+                                                                                    available_mem,
+                                                                                    this->SystemWorkTimeDiff);
+        this->CurrentSystemInfo->set_process_info(i, process_info);
     }
     LOGGER << log4cpp::Priority::DEBUG << "sucess get system info";
     return this->CurrentSystemInfo;
@@ -178,19 +180,9 @@ void SystemInfoProvider::get_system_mem_info(int32_t *total_mem, int32_t *availa
     shared_ptr<vector<string>> total_result_list = split_string_by_whitspace2(total_result);
     *total_mem = stoi((*total_result_list)[1]);
 
-    getline(fs, total_result);
-
     string available_result;
     getline(fs, available_result);
     shared_ptr<vector<string>> available_result_list = split_string_by_whitspace2(available_result);
     *available_mem = stoi((*available_result_list)[1]);
     fs.close();
 }
-
-// ProcessInfo *SystemInfoProvider::get_process_info(string &process_name)
-// {
-//     int32_t total_mem = 0;
-//     int32_t available_mem = 0;
-//     this->get_system_mem_info(&total_mem, &available_mem);
-//     return ProcessInfoProvider(process_name, total_mem, available_mem, this->SystemWorkTimeDiff).get_process_info();
-// }

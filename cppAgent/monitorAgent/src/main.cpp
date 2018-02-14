@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
         message.set_content(system_info_json.c_str());
         string message_json = message.to_json();
         logger << log4cpp::Priority::DEBUG << message_json;
-        // send_message(message_json.c_str());
+        send_message(message_json.c_str());
         this_thread::sleep_for(chrono::seconds(1));
     }
 

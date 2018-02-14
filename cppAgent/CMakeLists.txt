@@ -4,3 +4,11 @@ PROJECT(goMonitor)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ADD_SUBDIRECTORY(utils)
 ADD_SUBDIRECTORY(monitorAgent)
+
+ADD_CUSTOM_COMMAND(OUTPUT "config.ini"
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/config.ini ${PROJECT_SOURCE_DIR}/bin/)
+
+ADD_CUSTOM_COMMAND(OUTPUT "log4cpp.conf"
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/log4cpp.conf ${PROJECT_SOURCE_DIR}/bin/)
+
+add_custom_target(ConfigFile ALL DEPENDS "config.ini" "log4cpp.conf")

@@ -28,7 +28,6 @@ private:
   std::string get_system_cpu_stat();
   percent_t get_system_mem_usage();
   void get_system_mem_info(int32_t *total_mem, int32_t *available_mem);
-  // ProcessInfo *get_process_info(std::string &process_name);
 };
 
 #endif

@@ -47,6 +47,7 @@ public:
   void set_time(time_t time);
   std::vector<ProcessInfo *> &get_process_infoes();
   const std::vector<ProcessInfo *> &get_process_infoes() const;
+  void set_process_info(int index, ProcessInfo *process_info);
   std::string to_json() const;
   ~SystemInfo();
 

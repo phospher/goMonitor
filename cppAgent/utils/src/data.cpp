@@ -162,6 +162,18 @@ const vector<ProcessInfo *> &SystemInfo::get_process_infoes() const
     return this->ProcessInfoes;
 }
 
+void SystemInfo::set_process_info(int index, ProcessInfo *process_info)
+{
+    // if (this->ProcessInfoes[index] != NULL)
+    // {
+    //     delete this->ProcessInfoes[index];
+    // }
+
+    delete this->ProcessInfoes[index];
+
+    this->ProcessInfoes[index] = process_info;
+}
+
 SystemInfo::~SystemInfo()
 {
     for (ProcessInfo *item : this->ProcessInfoes)
